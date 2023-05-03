@@ -17,7 +17,6 @@ module.exports = {
     'comma-dangle': ['error', 'only-multiline'],
     'no-undef': 0,
     'no-unused-vars': ['error', { args: 'none' }],
-    'brace-style': ['error', 'stroustrup'],
     'no-extra-semi': 'error',
   },
 };

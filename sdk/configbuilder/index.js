@@ -17,16 +17,21 @@ module.exports = class ConfigBuilder {
 
   // Read config file from GCP secret manager
   buildConfig = async () => {
-    const gcpSecretDir = `projects/${process.env.GCP_PROJECT_ID}/secrets/${
-      process.env.GCP_SECRET_NAME
-    }/versions/${process.env.GCP_VERSION || 'latest'}`;
+    let secret;
+    if (process.env.ENVIRONMENT == 'development') {
+      const gcpSecretDir = `projects/${process.env.GCP_PROJECT_ID}/secrets/${
+        process.env.GCP_SECRET_NAME
+      }/versions/${process.env.GCP_VERSION || 'latest'}`;
 
-    const [secretResponse] = await this.gcpSecretClient.accessSecretVersion({
-      name: gcpSecretDir,
-    });
+      const [secretResponse] = await this.gcpSecretClient.accessSecretVersion({
+        name: gcpSecretDir,
+      });
 
-    const decodedSecretString = secretResponse.payload.data.toString('utf8');
-    const secret = JSON.parse(decodedSecretString);
+      const decodedSecretString = secretResponse.payload.data.toString('utf8');
+      secret = JSON.parse(decodedSecretString);
+    }else if (process.env.ENVIRONMENT == 'staging') {
+      secret = JSON.parse(process.env.CONFIG_JSON); 
+    }
 
     File.write(
       __dirname,
