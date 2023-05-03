@@ -9,14 +9,14 @@ const configPath = 'etc/config.json';
 
 initServer = async () => {
   let config;
-  if (process.env.ENVIROMENT == 'development') {
+  if (process.env.ENVIRONMENT == 'development') {
     if (!File.isExist(__dirname, configPath)) {
       const configBuilder = new ConfigBuilder();
       await configBuilder.buildConfig();
     }
     config = ConfigReader.readConfig(__dirname, './etc/config.json');
-  }else if (process.env,ENVIROMENT == 'staging'){
-    config = ConfigReader.readConfig(__dirname, '/secret/config.json');
+  }else if (process.env.ENVIRONMENT == 'staging'){
+    config = ConfigReader.readConfig('/', 'secret/config.json');
   }
 
   const log = new Logger(config.Log.Level);
