@@ -8,12 +8,17 @@ const Controller = require('./src/controller');
 const configPath = 'etc/config.json';
 
 initServer = async () => {
-  if (!File.isExist(__dirname, configPath)) {
-    const configBuilder = new ConfigBuilder();
-    await configBuilder.buildConfig();
+  let config;
+  if (process.env.ENVIROMENT == 'development') {
+    if (!File.isExist(__dirname, configPath)) {
+      const configBuilder = new ConfigBuilder();
+      await configBuilder.buildConfig();
+    }
+    config = ConfigReader.readConfig(__dirname, './etc/config.json');
+  }else if (process.env,ENVIROMENT == 'staging'){
+    config = ConfigReader.readConfig(__dirname, '/secret/config.json');
   }
 
-  const config = ConfigReader.readConfig(__dirname, './etc/config.json');
   const log = new Logger(config.Log.Level);
 
   const controller = new Controller(config, log);
