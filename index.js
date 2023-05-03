@@ -4,19 +4,21 @@ const File = require('./sdk/file');
 const ConfigReader = require('./sdk/configreader');
 const Logger = require('./sdk/log');
 const Controller = require('./src/controller');
-const Context = require('./sdk/context');
 
 const configPath = 'etc/config.json';
 
-if (!File.isExist(__dirname, configPath)) {
-  new ConfigBuilder().buildConfig();
-}
+initServer = async () => {
+  if (!File.isExist(__dirname, configPath)) {
+    const configBuilder = new ConfigBuilder();
+    await configBuilder.buildConfig();
+  }
 
-const config = ConfigReader.readConfig(__dirname, './etc/config.json');
-const log = new Logger(config.Log.Level);
+  const config = ConfigReader.readConfig(__dirname, './etc/config.json');
+  const log = new Logger(config.Log.Level);
 
-log.info(new Context(), 'test');
+  const controller = new Controller(config, log);
 
-const controller = new Controller(config, log);
+  controller.run();
+};
 
-controller.run();
+initServer();
