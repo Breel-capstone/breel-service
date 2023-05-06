@@ -5,4 +5,5 @@
 
 ## Installation
 - Ask me for the .env file
-- Run the server with "npm run start"
+- Install the dependencies with `npm install`
+- Run the server with `npm run start`
