@@ -1,14 +1,24 @@
 const { nanoid } = require('nanoid');
 const Context = require('../../sdk/context');
 
-module.exports = class ControllerHelper {
+module.exports = class RouteHelper {
   constructor(config, log) {
     this.config = config;
     this.log = log;
   }
 
+  /**
+   * @swagger
+   * /ping:
+   *   get:
+   *     summary: Ping the server
+   *     tags: [Ping]
+   *     responses:
+   *       200:
+   *         description: check if connected
+   */
   ping = async (req, res) => {
-    this.httpRespSuccess(req, res, 200, null, null);
+    this.httpRespSuccess(req, res, 200, 'PONG!!', null);
   };
 
   addFieldsToContext(req, res, next) {

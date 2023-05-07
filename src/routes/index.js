@@ -1,14 +1,19 @@
 const express = require('express');
-const ControllerHelper = require('./controllerHelper');
+
+const RouteHelper = require('./helper');
 const Context = require('../../sdk/context');
 
-module.exports = class Controller {
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+
+module.exports = class Route {
   constructor(config, log) {
     this.config = config;
     this.log = log;
     this.app = express();
-    this.helper = new ControllerHelper(config, log);
+    this.helper = new RouteHelper(config, log);
     this.app.use(express.json());
+    this.initSwagger();
 
     this.registerRoutes();
   }
@@ -17,6 +22,11 @@ module.exports = class Controller {
     this.app.use(this.helper.addFieldsToContext);
     this.app.use(this.helper.bodyLogger);
 
+    this.app.use(
+      '/swagger',
+      swaggerUI.serve,
+      swaggerUI.setup(this.swaggerSpecs),
+    );
     this.app.get('/ping', this.helper.ping);
 
     this.app.use(this.helper.errorHandler);
@@ -50,5 +60,31 @@ module.exports = class Controller {
 
     // The SIGTERM signal is sent to a process to request its termination.
     process.on('SIGTERM', gracefulShutdownHandler);
+  };
+
+  initSwagger = () => {
+    const { Swagger: swaggerConfig } = this.config;
+    const swaggerOptions = {
+      definition: {
+        openapi: swaggerConfig.Openapi,
+        info: {
+          title: swaggerConfig.Info.Title,
+          version: swaggerConfig.Info.Version,
+          description: swaggerConfig.Info.Description,
+          contact: {
+            name: swaggerConfig.Info.Contact.Name,
+            email: swaggerConfig.Info.Contact.Email,
+          },
+        },
+        servers: [
+          {
+            url: `http://${this.config.Meta.Host}`,
+          },
+        ],
+      },
+      apis: swaggerConfig.APIs,
+    };
+
+    this.swaggerSpecs = swaggerJsDoc(swaggerOptions);
   };
 };
