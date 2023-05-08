@@ -1,10 +1,10 @@
 const express = require('express');
-
-const RouteHelper = require('./helper');
-const Context = require('../../sdk/context');
-
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+
+const path = require('path');
+const RouteHelper = require('./helper');
+const Context = require('../../sdk/context');
 
 module.exports = class Route {
   constructor(config, log) {
@@ -21,6 +21,16 @@ module.exports = class Route {
   registerRoutes = () => {
     this.app.use(this.helper.addFieldsToContext);
     this.app.use(this.helper.bodyLogger);
+
+    this.app.set('view engine', 'ejs');
+    this.app.engine('html', require('ejs').renderFile);
+    this.app.use(express.static('static'));
+    this.app.get('/dummy/login', (req, res) => {
+      res.render(
+        path.join(__dirname, '../views/dummy-login.html'),
+        this.config.Firebase.ClientConfig,
+      );
+    });
 
     this.app.use(
       '/swagger',
@@ -75,10 +85,14 @@ module.exports = class Route {
             name: swaggerConfig.Info.Contact.Name,
             email: swaggerConfig.Info.Contact.Email,
           },
+          license: {
+            name: 'Get the bearer token here',
+            url: `${this.config.Meta.Protocol}://${this.config.Meta.Host}/dummy/login`,
+          },
         },
         servers: [
           {
-            url: `http://${this.config.Meta.Host}`,
+            url: `${this.config.Meta.Protocol}://${this.config.Meta.Host}`,
           },
         ],
       },

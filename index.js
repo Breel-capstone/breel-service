@@ -3,6 +3,7 @@ const ConfigBuilder = require('./sdk/configbuilder');
 const File = require('./sdk/file');
 const ConfigReader = require('./sdk/configreader');
 const Logger = require('./sdk/log');
+const AuthLib = require('./sdk/authlib');
 const Route = require('./src/routes');
 
 const configPath = 'etc/config.json';
@@ -18,6 +19,8 @@ initServer = async () => {
   } else if (process.env.ENVIRONMENT == 'staging') {
     config = ConfigReader.readConfig('/', 'secret/config.json');
   }
+
+  const authLib = new AuthLib(config);
 
   const log = new Logger(config.Log.Level);
 
