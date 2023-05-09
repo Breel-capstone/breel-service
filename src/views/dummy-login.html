@@ -65,8 +65,6 @@
         measurementId: '<%- MeasurementID %>',
       };
 
-      console.log(firebaseConfig);
-
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       window.app = app;
@@ -110,7 +108,7 @@
             }
           },
           function (error) {
-            console.log(error);
+            alert(error)
           },
         );
       }

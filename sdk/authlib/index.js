@@ -15,7 +15,14 @@ module.exports = class Auth {
     });
   }
 
-  verifyToken = async (firebaseToken) => {
+  getUser = async (firebaseToken) => {
     return await firebaseAuth.getAuth().verifyIdToken(firebaseToken);
+  };
+
+  createUser = async (email, password) => {
+    return await firebaseAuth.createUser({
+      email,
+      password,
+    });
   };
 };
