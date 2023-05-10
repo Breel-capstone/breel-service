@@ -8,8 +8,6 @@ module.exports = class UserController {
   register = async (req, res, next) => {
     try {
       // TODO: validate request body
-      console.log('test');
-
       this.helper.httpRespSuccess(req, res, 201, 'success', null);
     } catch (error) {
       next(error);

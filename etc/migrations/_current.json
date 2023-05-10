@@ -1,0 +1,173 @@
+{
+    "tables": {
+        "action": {
+            "tableName": "action",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "isActive": {
+                    "defaultValue": {
+                        "value": true
+                    },
+                    "field": "is_active",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "role": {
+            "tableName": "role",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "isActive": {
+                    "defaultValue": {
+                        "value": true
+                    },
+                    "field": "is_active",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "role_action": {
+            "tableName": "role_action",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "roleId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "role",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "role_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "actionId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "action",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "action_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "isActive": {
+                    "defaultValue": {
+                        "value": true
+                    },
+                    "field": "is_active",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        }
+    },
+    "revision": 1
+}

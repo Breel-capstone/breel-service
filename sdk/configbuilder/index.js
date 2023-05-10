@@ -17,7 +17,6 @@ module.exports = class ConfigBuilder {
 
   // Read config file from GCP secret manager
   buildConfig = async () => {
-    let secret;
     if (process.env.ENVIRONMENT == 'development') {
       const gcpSecretDir = `projects/${process.env.GCP_PROJECT_ID}/secrets/${
         process.env.GCP_SECRET_NAME
@@ -29,8 +28,8 @@ module.exports = class ConfigBuilder {
 
       const decodedSecretString = secretResponse.payload.data.toString('utf8');
       secret = JSON.parse(decodedSecretString);
-    }else if (process.env.ENVIRONMENT == 'staging') {
-      secret = JSON.parse(process.env.CONFIG_JSON); 
+    } else if (process.env.ENVIRONMENT == 'staging') {
+      secret = JSON.parse(process.env.CONFIG_JSON);
     }
 
     File.write(
@@ -38,5 +37,34 @@ module.exports = class ConfigBuilder {
       '../../etc/config.json',
       JSON.stringify(secret, null, 2),
     );
+  };
+
+  buildSequelizeConfig = (globalConfig) => {
+    const sequelizeConfigPath = '../../etc/sequelize-config.json';
+    if (
+      globalConfig.SQL.ORM == 'sequelize' &&
+      !File.isExist(__dirname, sequelizeConfigPath)
+    ) {
+      const sequelizeConfig = {
+        username: globalConfig.SQL.Username,
+        password: globalConfig.SQL.Password,
+        database: globalConfig.SQL.Database,
+        host: globalConfig.SQL.Host,
+        dialect: globalConfig.SQL.Dialect,
+      };
+      File.write(
+        __dirname,
+        sequelizeConfigPath,
+        JSON.stringify(
+          {
+            development: sequelizeConfig,
+            test: sequelizeConfig,
+            production: sequelizeConfig,
+          },
+          null,
+          2,
+        ),
+      );
+    }
   };
 };

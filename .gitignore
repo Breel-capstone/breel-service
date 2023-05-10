@@ -1,3 +1,4 @@
 .env
 node_modules/
 etc/config.json
+etc/sequelize-config.json

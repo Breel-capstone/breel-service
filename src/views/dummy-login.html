@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Aquahero Dummy Login</title>
+    <title>Breel Dummy Login</title>
     <link
       href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
@@ -95,7 +95,7 @@
               user.getIdToken(true).then(function (accessToken) {
                 statusElem.textContent = 'Signed in';
                 statusElem.style.color = 'green';
-                tokenElem.textContent = 'Bearer ' + accessToken;
+                tokenElem.textContent = accessToken;
                 detailsElem.value = JSON.stringify(user, null, '  ');
                 loginElem.style.display = 'none';
               });
@@ -156,12 +156,20 @@
           });
       }
 
+      function copyTextArea() {
+        var copyText = document.getElementById('access-token');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+      }
+
       // must be called before the ui initialization below -->
       setupAuth();
 
       window.login = login;
       window.signOutHandler = signOutHandler;
       window.signInWithGoogle = signInWithGoogle;
+      window.copyTextarea = copyTextArea;
     </script>
   </body>
 </html>

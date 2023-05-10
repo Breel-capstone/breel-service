@@ -9,13 +9,14 @@ const RouteHelper = require('./src/routes/helper');
 const Middleware = require('./src/middlewares');
 const Controller = require('./src/controllers');
 const Route = require('./src/routes');
-const configPath = 'etc/config.json';
 
+const configPath = 'etc/config.json';
 initServer = async () => {
   let config;
+  const configBuilder = new ConfigBuilder();
+
   if (process.env.ENVIRONMENT == 'development') {
     if (!File.isExist(__dirname, configPath)) {
-      const configBuilder = new ConfigBuilder();
       await configBuilder.buildConfig();
     }
     config = ConfigReader.readConfig(__dirname, './etc/config.json');
@@ -23,8 +24,11 @@ initServer = async () => {
     config = ConfigReader.readConfig('/', 'secret/config.json');
   }
 
+  configBuilder.buildSequelizeConfig(config);
+
   const authLib = new AuthLib(config);
   const log = new Logger(config.Log.Level);
+  console.log(db.instance);
 
   const routeHelper = new RouteHelper(config, log);
   const middleware = new Middleware(config, log, authLib, routeHelper);

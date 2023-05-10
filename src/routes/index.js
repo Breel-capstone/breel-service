@@ -25,8 +25,7 @@ module.exports = class Route {
   initSwagger = () => {
     const { Swagger: swaggerConfig } = this.config;
     const swaggerOptions = {
-      definition: {
-        openapi: swaggerConfig.Openapi,
+      swaggerDefinition: {
         info: {
           title: swaggerConfig.Info.Title,
           version: swaggerConfig.Info.Version,
@@ -38,15 +37,21 @@ module.exports = class Route {
           license: {
             name: 'Get the bearer token here',
             url: `${this.config.Meta.Protocol}://${this.config.Meta.Host}/dummy/login`,
+          }
+        },
+        basePath: '/',
+        components: {
+          securitySchemes: {
+            bearerAuth: {
+              type: 'http',
+              scheme: 'bearer',
+              bearerFormat: 'JWT',
+            },
           },
         },
-        servers: [
-          {
-            url: `${this.config.Meta.Protocol}://${this.config.Meta.Host}`,
-          },
-        ],
+        openapi: swaggerConfig.Openapi,
       },
-      apis: swaggerConfig.APIs,
+      apis: swaggerConfig.APIs, // Path to the API docs
     };
 
     this.swaggerSpecs = swaggerJsDoc(swaggerOptions);
@@ -99,9 +104,6 @@ module.exports = class Route {
     ).getRoutes();
     this.app.use('/v1/user', userRoute);
     
-    console.log(userRoute);
-    console.log(authRoute);
-
     this.app.use(this.middleware.errorHandler);
     this.app.use(this.middleware.notFoundHandler);
   };
