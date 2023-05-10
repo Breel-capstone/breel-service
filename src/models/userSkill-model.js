@@ -1,8 +1,17 @@
 module.exports = (sequelize, Sequelize) => {
-  const Role = sequelize.define(
-    'Role',
+  const UserSkill = sequelize.define(
+    'UserSkill',
     {
-      name: {
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+      },
+      skillName: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -24,20 +33,17 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
       paranoid: true,
-      tableName: 'role',
+      tableName: 'user_skill',
       underscored: true,
       timestamps: true,
-      associate: (models) => {
-        Role.hasMany(models.RoleAction, {
-          foreignKey: 'roleId',
-          as: 'roleActions',
-        });
-        Role.hasMany(models.User, {
-          foreignKey: 'roleId',
-          as: 'users',
-        });
-      },
     },
   );
-  return Role;
+
+  UserSkill.associate = (models) => {
+    UserSkill.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user',
+    });
+  };
+  return UserSkill;
 };
