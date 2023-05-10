@@ -15,9 +15,6 @@ module.exports = class AuthRoute {
        *   post:
        *     summary: Register a new user
        *     tags: [Auth]
-       *     responses:
-       *       200:
-       *         description: user created
        *     requestBody:
        *       required: true
        *       content:
@@ -29,6 +26,21 @@ module.exports = class AuthRoute {
        *                 type: string
        *               password:
        *                 type: string
+       *     responses:
+       *       201:
+       *         description: user created
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                 idToken:
+       *                   type: string
+       *                 user:
+       *                   type: object
+       *                   allOf:
+       *                     - $ref: '#/components/schemas/User'
+       *                     - $ref: '#/components/schemas/UtilityField'
        */
       .post('/register', this.authController.register);
 

@@ -57,6 +57,39 @@ module.exports = class Route {
     this.swaggerSpecs = swaggerJsDoc(swaggerOptions);
   };
 
+  /**
+   *@swagger
+   *components:
+   *  schemas:
+   *    UtilityField:
+   *      type: object
+   *      properties:  
+   *        isActive:
+   *          type: boolean
+   *        createdAt:
+   *          type: string
+   *          format: date-time
+   *          example: 2020-12-31T23:59:59.999Z
+   *        updatedAt:
+   *          type: string
+   *          format: date-time 
+   *          example: 2020-12-31T23:59:59.999Z
+   *        deletedAt:
+   *          type: string
+   *          format: date-time
+   *          example: 2020-12-31T23:59:59.999Z
+   *          nullable: true
+   *        createdBy:
+   *          type: string
+   *          nullable: true
+   *        updatedBy:
+   *          type: string
+   *          nullable: true
+   *        deletedBy:
+   *          type: string
+   *          nullable: true
+   */
+
   registerRoutes = () => {
     this.app.set('view engine', 'ejs');
     this.app.engine('html', require('ejs').renderFile);

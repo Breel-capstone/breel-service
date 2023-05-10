@@ -8,6 +8,34 @@ module.exports = class UserRoute {
     this.authMiddleware = authMiddleware;
   }
 
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     User:
+   *       type: object
+   *       properties:
+   *         id:
+   *           type: integer
+   *         uid:
+   *           type: string
+   *         email:
+   *           type: string
+   *         roleId:
+   *           type: integer
+   *         fullName:
+   *           type: string
+   *         title:
+   *           type: string
+   *           nullable: true
+   *         description:
+   *           type: string
+   *           nullable: true
+   *         profileUrl:
+   *           type: string
+   *           nullable: true
+   */
+
   getRoutes = () => {
     userRouter
       /**
@@ -20,7 +48,14 @@ module.exports = class UserRoute {
        *       - bearerAuth: []
        *     responses:
        *        200:
-       *          description: user profile
+       *          content:
+       *            application/json:
+       *              schema:
+       *                type: object
+       *                allOf:
+       *                  - $ref: '#/components/schemas/User'
+       *                  - $ref: '#/components/schemas/UtilityField'
+       *            
        */
       .get(
         '/profile',

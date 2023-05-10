@@ -8,6 +8,7 @@ const AuthLib = require('./sdk/authlib');
 const RouteHelper = require('./src/routes/helper');
 const Middleware = require('./src/middlewares');
 const Controller = require('./src/controllers');
+const sequelizeModel = require('./src/models');
 const Route = require('./src/routes');
 
 const configPath = 'etc/config.json';
@@ -28,11 +29,10 @@ initServer = async () => {
 
   const authLib = new AuthLib(config);
   const log = new Logger(config.Log.Level);
-  console.log(db.instance);
 
   const routeHelper = new RouteHelper(config, log);
   const middleware = new Middleware(config, log, authLib, routeHelper);
-  const controller = new Controller(log, routeHelper, authLib);
+  const controller = new Controller(log, config, routeHelper, authLib, sequelizeModel);
   const route = new Route(config, log, routeHelper, controller, middleware);
 
   route.run();

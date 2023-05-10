@@ -207,6 +207,7 @@
                     "seqType": "Sequelize.STRING"
                 },
                 "title": {
+                    "allowNull": false,
                     "field": "title",
                     "seqType": "Sequelize.STRING"
                 },
@@ -473,5 +474,5 @@
             "indexes": []
         }
     },
-    "revision": 3
+    "revision": 2
 }
