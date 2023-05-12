@@ -31,7 +31,11 @@ if (process.env.ENVIRONMENT == 'development') {
     config.SQL.Database,
     config.SQL.Username,
     config.SQL.Password,
-    {},
+    {
+      dialect : config.SQL.Dialect,
+      host : config.SQL.Host
+    }
+    
   );
 }
 
