@@ -51,7 +51,15 @@ module.exports = class ConfigBuilder {
         database: globalConfig.SQL.Database,
         host: globalConfig.SQL.Host,
         dialect: globalConfig.SQL.Dialect,
+        benchmark: true,
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       };
+
       File.write(
         __dirname,
         sequelizeConfigPath,

@@ -3,12 +3,26 @@ const httpClient = require('axios');
 const ErrorLib = require('../../sdk/errorlib');
 
 module.exports = class UserController {
-  constructor(log, config, helper, authLib, userModel) {
+  constructor(
+    log,
+    config,
+    helper,
+    authLib,
+    userModel,
+    userExperienceModel,
+    userProjectModel,
+    userSkillModel,
+    dbTransaction,
+  ) {
     this.log = log;
     this.config = config;
     this.helper = helper;
     this.authLib = authLib;
     this.userModel = userModel;
+    this.userExperienceModel = userExperienceModel;
+    this.userProjectModel = userProjectModel;
+    this.userSkillModel = userSkillModel;
+    this.dbTransaction = dbTransaction;
   }
 
   register = async (req, res, next) => {
@@ -86,6 +100,57 @@ module.exports = class UserController {
 
       this.helper.httpRespSuccess(req, res, 200, userInfo, null);
     } catch (error) {
+      next(error);
+    }
+  };
+
+  registerDetail = async (req, res, next) => {
+    let dbTransaction;
+    try {
+      const { user, userSkills, userExperiences, userProjects } = req.body;
+      const { user: currentUser } = req;
+
+      dbTransaction = await this.dbTransaction({
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      await this.userModel.update(
+        {
+          fullName: user.fullName,
+          title: user.title,
+          description: user.description,
+          profileUrl: user.profileUrl,
+        },
+        {
+          where: { uid: currentUser.uid },
+          transaction: dbTransaction,
+          logging: this.log.logSqlQuery(req.context),
+        },
+      );
+
+      await this.userExperienceModel.bulkCreate(userExperiences, {
+        logging: this.log.logSqlQuery(req.context),
+        transaction: dbTransaction,
+      });
+
+      await this.userProjectModel.bulkCreate(userProjects, {
+        logging: this.log.logSqlQuery(req.context),
+        transaction: dbTransaction,
+      });
+
+      await this.userSkillModel.bulkCreate(userSkills, {
+        logging: this.log.logSqlQuery(req.context),
+        transaction: dbTransaction,
+      });
+
+      await dbTransaction.commit({
+        logging: this.log.logSqlQuery(req.context),
+      });
+      
+    } catch (error) {
+      if (dbTransaction) {
+        await dbTransaction.rollback();
+      }
       next(error);
     }
   };

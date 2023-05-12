@@ -8,7 +8,6 @@ const AuthLib = require('./sdk/authlib');
 const RouteHelper = require('./src/routes/helper');
 const Middleware = require('./src/middlewares');
 const Controller = require('./src/controllers');
-const sequelizeModel = require('./src/models');
 const Route = require('./src/routes');
 
 const configPath = 'etc/config.json';
@@ -26,6 +25,8 @@ initServer = async () => {
   }
 
   configBuilder.buildSequelizeConfig(config);
+  const sequelizeModel = require('./src/models');
+
 
   const authLib = new AuthLib(config);
   const log = new Logger(config.Log.Level);
