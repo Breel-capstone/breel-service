@@ -60,6 +60,10 @@ module.exports = class ConfigBuilder {
         },
       };
 
+      if (process.env.ENVIRONMENT == 'development') {
+        sequelizeConfig.dialectOptions = undefined;
+      }
+
       File.write(
         __dirname,
         sequelizeConfigPath,

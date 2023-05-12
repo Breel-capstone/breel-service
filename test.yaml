@@ -1,0 +1,61 @@
+components:
+  schemas:
+    UserExperience:
+      type: object
+      properties:
+        companyName:
+          type: string
+          location:
+            type: string
+          title:
+            type: string
+          startDate:
+            type: string
+            format: date
+            example: 2020-01-01
+          endDate:
+            type: string
+            format: date
+            example: 2020-01-01
+            nullable: true
+          description:
+            type: string
+            nullable: true
+    UserSkill:
+      type: object
+      properties:
+        skillName:
+          type: string
+      UserProject:
+        type: object
+        properties:
+          title:
+            type: string
+          thumbnailUrl:
+            type: string
+            nullable: true
+          description:
+            type: string
+            nullable: true
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        uid:
+          type: string
+        email:
+          type: string
+        roleId:
+          type: integer
+        fullName:
+          type: string
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        profileUrl:
+          type: string
+          nullable: true

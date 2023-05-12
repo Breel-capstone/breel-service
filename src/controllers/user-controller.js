@@ -110,6 +110,11 @@ module.exports = class UserController {
       const { user, userSkills, userExperiences, userProjects } = req.body;
       const { user: currentUser } = req;
 
+      const userInfo = await this.userModel.findOne({
+        logging: this.log.logSqlQuery(req.context),
+        where: { uid: currentUser.uid },
+      });
+
       dbTransaction = await this.dbTransaction({
         logging: this.log.logSqlQuery(req.context),
       });
@@ -122,31 +127,56 @@ module.exports = class UserController {
           profileUrl: user.profileUrl,
         },
         {
-          where: { uid: currentUser.uid },
+          where: { id: userInfo.id },
           transaction: dbTransaction,
           logging: this.log.logSqlQuery(req.context),
         },
       );
 
-      await this.userExperienceModel.bulkCreate(userExperiences, {
-        logging: this.log.logSqlQuery(req.context),
-        transaction: dbTransaction,
-      });
+      await this.userExperienceModel.bulkCreate(
+        userExperiences.map((userExperience) => ({
+          ...userExperience,
+          userId: userInfo.id,
+        })),
+        {
+          logging: this.log.logSqlQuery(req.context),
+          transaction: dbTransaction,
+        },
+      );
 
-      await this.userProjectModel.bulkCreate(userProjects, {
-        logging: this.log.logSqlQuery(req.context),
-        transaction: dbTransaction,
-      });
+      await this.userProjectModel.bulkCreate(
+        userProjects.map((userProject) => ({
+          ...userProject,
+          userId: userInfo.id,
+        })),
+        {
+          logging: this.log.logSqlQuery(req.context),
+          transaction: dbTransaction,
+        },
+      );
 
-      await this.userSkillModel.bulkCreate(userSkills, {
-        logging: this.log.logSqlQuery(req.context),
-        transaction: dbTransaction,
-      });
+      await this.userSkillModel.bulkCreate(
+        userSkills.map((userSkill) => ({
+          ...userSkill,
+          userId: userInfo.id,
+        })),
+        {
+          logging: this.log.logSqlQuery(req.context),
+          transaction: dbTransaction,
+        },
+      );
 
       await dbTransaction.commit({
         logging: this.log.logSqlQuery(req.context),
       });
-      
+
+      this.helper.httpRespSuccess(
+        req,
+        res,
+        200,
+        'Register user detail successfull!',
+        null,
+      );
     } catch (error) {
       if (dbTransaction) {
         await dbTransaction.rollback();

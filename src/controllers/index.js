@@ -12,8 +12,8 @@ module.exports = class Controller {
       model.User,
       model.UserExperience,
       model.UserProject,
-      model.userSkill,
-      model.sequelize.transaction,
+      model.UserSkill,
+      model.sequelize.transaction.bind(model.sequelize),
     );
   }
 
