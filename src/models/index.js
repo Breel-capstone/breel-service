@@ -4,19 +4,32 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
+const ConfigReader = require(__dirname + '../../../sdk/configreader');
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '../../../etc/sequelize-config.json')[env];
 const db = {};
 
+let config;
 let sequelize;
+
+config = require(__dirname + '../../../etc/sequelize-config.json')[env];
+
+
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
+} else if (process.env.ENVIRONMENT == 'development'){
   sequelize = new Sequelize(
     config.database,
     config.username,
     config.password,
     config,
+  );
+} else if(process.env.ENVIRONMENT == 'staging' || process.env.ENVIRONMENT == 'production'){
+  config = ConfigReader.readConfig('/', 'secret/config.json');
+  sequelize = new Sequelize(
+    config.SQL.Database,
+    config.SQL.Username,
+    config.SQL.Password,
+    {}
   );
 }
 

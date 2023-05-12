@@ -16,6 +16,7 @@ initServer = async () => {
   const configBuilder = new ConfigBuilder();
 
   if (process.env.ENVIRONMENT == 'development') {
+    configBuilder.buildSequelizeConfig(config);
     if (!File.isExist(__dirname, configPath)) {
       await configBuilder.buildConfig();
     }
@@ -24,7 +25,7 @@ initServer = async () => {
     config = ConfigReader.readConfig('/', 'secret/config.json');
   }
 
-  configBuilder.buildSequelizeConfig(config);
+
   const sequelizeModel = require('./src/models');
 
 
