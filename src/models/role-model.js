@@ -8,10 +8,6 @@ module.exports = (sequelize, Sequelize) => {
       },
 
       // Utility columns
-      isActive: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: true,
-      },
       createdBy: {
         type: Sequelize.STRING,
       },
@@ -27,17 +23,18 @@ module.exports = (sequelize, Sequelize) => {
       tableName: 'role',
       underscored: true,
       timestamps: true,
-      associate: (models) => {
-        Role.hasMany(models.RoleAction, {
-          foreignKey: 'roleId',
-          as: 'roleActions',
-        });
-        Role.hasMany(models.User, {
-          foreignKey: 'roleId',
-          as: 'users',
-        });
-      },
     },
   );
+
+  Role.associate = (models) => {
+    Role.hasMany(models.RoleAction, {
+      foreignKey: 'roleId',
+      as: 'roleActions',
+    });
+    Role.hasMany(models.User, {
+      foreignKey: 'roleId',
+      as: 'users',
+    });
+  };
   return Role;
 };

@@ -22,10 +22,6 @@ module.exports = (sequelize, Sequelize) => {
       },
 
       // Utility columns
-      isActive: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: true,
-      },
       createdBy: {
         type: Sequelize.STRING,
       },
@@ -41,17 +37,18 @@ module.exports = (sequelize, Sequelize) => {
       tableName: 'role_action',
       underscored: true,
       timestamps: true,
-      associate: (models) => {
-        RoleAction.belongsTo(models.Role, {
-          foreignKey: 'roleId',
-          as: 'role',
-        });
-        RoleAction.belongsTo(models.Action, {
-          foreignKey: 'actionId',
-          as: 'action',
-        });
-      },
     },
   );
+
+  RoleAction.associate = (models) => {
+    RoleAction.belongsTo(models.Role, {
+      foreignKey: 'roleId',
+      as: 'role',
+    });
+    RoleAction.belongsTo(models.Action, {
+      foreignKey: 'actionId',
+      as: 'action',
+    });
+  };
   return RoleAction;
 };

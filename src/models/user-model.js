@@ -35,10 +35,6 @@ module.exports = (sequelize, Sequelize) => {
       },
 
       // Utility columns
-      isActive: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: true,
-      },
       createdBy: {
         type: Sequelize.STRING,
       },
