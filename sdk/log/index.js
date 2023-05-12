@@ -31,4 +31,13 @@ module.exports = class Logger {
   fatal = (context, message) => {
     this.logger.fatal(context.getAllFields(), message);
   };
+
+  logSqlQuery = (context) => {
+    return (query, timeElapsed) => {
+      this.logger.info(context.getAllFields(), {
+        query,
+        timeElapsed: `${timeElapsed}ms`,
+      });
+    };
+  };
 };

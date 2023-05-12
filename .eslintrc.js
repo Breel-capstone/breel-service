@@ -18,5 +18,6 @@ module.exports = {
     'no-undef': 0,
     'no-unused-vars': ['error', { args: 'none' }],
     'no-extra-semi': 'error',
+    'quote-props': ['error', 'as-needed'],
   },
 };

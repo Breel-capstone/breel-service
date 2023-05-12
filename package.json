@@ -7,23 +7,36 @@
     "start": "node .",
     "start-live": "nodemon .",
     "lint": "npx= eslint ./",
-    "lint-fix": "npx eslint --fix ./"
+    "lint-fix": "npx eslint --fix ./",
+    "create-migration": "./node_modules/sequelize-auto-migrations/bin/makemigration.js && npm run lint-fix",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/secret-manager": "^4.2.2",
+    "axios": "^1.4.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
+    "firebase-admin": "^11.8.0",
     "nanoid": "^3.3.4",
-    "pino": "^8.11.0"
+    "pg": "^8.10.0",
+    "pino": "^8.11.0",
+    "sequelize": "^6.31.1",
+    "sequelize-auto-migrations": "github:scimonster/sequelize-auto-migrations#a063aa6535a3f580623581bf866cef2d609531ba",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
     "eslint": "^8.39.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
     "nodemon": "^2.0.22",
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "sequelize-cli": "^6.6.0"
   }
 }
