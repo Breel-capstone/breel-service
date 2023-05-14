@@ -32,10 +32,16 @@ if (process.env.ENVIRONMENT == 'development') {
     config.SQL.Username,
     config.SQL.Password,
     {
-      dialect : config.SQL.Dialect,
-      host : config.SQL.Host
-    }
-    
+      dialect: config.SQL.Dialect,
+      host: config.SQL.Host,
+      benchmark: true,
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      },
+    },
   );
 }
 
