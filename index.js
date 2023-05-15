@@ -16,10 +16,11 @@ initServer = async () => {
   const configBuilder = new ConfigBuilder();
 
   if (process.env.ENVIRONMENT == 'development') {
-    configBuilder.buildSequelizeConfig(config);
     if (!File.isExist(__dirname, configPath)) {
       await configBuilder.buildConfig();
     }
+    config = ConfigReader.readConfig(__dirname, configPath);
+    configBuilder.buildSequelizeConfig(config);
     config = ConfigReader.readConfig(__dirname, './etc/config.json');
   } else if (process.env.ENVIRONMENT == 'staging') {
     config = ConfigReader.readConfig('/', 'secret/config.json');
@@ -27,7 +28,6 @@ initServer = async () => {
 
 
   const sequelizeModel = require('./src/models');
-
 
   const authLib = new AuthLib(config);
   const log = new Logger(config.Log.Level);

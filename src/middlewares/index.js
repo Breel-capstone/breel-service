@@ -36,6 +36,28 @@ module.exports = class Middleware {
     );
   };
 
+  paginate = (req, res, next) => {
+    const { query } = req;
+    let { page, limit, disableLimit } = query;
+
+    disableLimit = disableLimit === 'true' || false;
+
+    if (!disableLimit) {
+      page = page ? parseInt(page) : 1;
+      limit = limit ? parseInt(limit) : 10;
+      req.paginationQuery = {
+        offset: (page - 1) * limit,
+        limit,
+      };
+    } else {
+      req.paginationQuery = {
+        offset: 0,
+      };
+    }
+
+    next();
+  };
+
   errorHandler = (error, req, res, next) => {
     const errCode = error.statusCode || 500;
     const errMessage = error.message || 'Internal Server Error';

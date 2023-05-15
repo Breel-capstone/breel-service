@@ -184,4 +184,36 @@ module.exports = class UserController {
       next(error);
     }
   };
+
+  getUserMentor = async (req, res, next) => {
+    const dummyDatas = [
+      {
+        id: 1,
+        fullName: 'Anjani P.',
+        price: 500_000,
+        priceString: '500.000',
+        profileUrl: 'https://picsum.photos/200',
+        skills: ['UI/UX', 'Figma'],
+      },
+    ];
+
+    for (let i = 1; i < 10; i++) {
+      dummyDatas.push({
+        id: i + 1,
+        fullName: dummyDatas[0].fullName,
+        price: dummyDatas[0].price,
+        priceString: dummyDatas[0].priceString,
+        profileUrl: dummyDatas[0].profileUrl,
+        skills: dummyDatas[0].skills,
+      });
+    }
+
+    const paginationResponse = this.helper.processPagination(
+      req.paginationQuery,
+      dummyDatas.length,
+      dummyDatas.length,
+    );
+
+    this.helper.httpRespSuccess(req, res, 200, dummyDatas, paginationResponse);
+  };
 };

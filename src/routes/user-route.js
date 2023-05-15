@@ -1,11 +1,12 @@
 const userRouter = require('express').Router();
 
 module.exports = class UserRoute {
-  constructor(config, log, userController, authMiddleware) {
+  constructor(config, log, userController, middleware) {
     this.config = config;
     this.log = log;
     this.userController = userController;
-    this.authMiddleware = authMiddleware;
+    this.authMiddleware = middleware.auth;
+    this.paginationMiddleware = middleware.paginate;
   }
 
   /**
@@ -28,7 +29,7 @@ module.exports = class UserRoute {
    *        endDate:
    *          type: string
    *          format: date
-   *          example: 2020-01-01 
+   *          example: 2020-01-01
    *          nullable: true
    *        description:
    *          type: string
@@ -74,6 +75,7 @@ module.exports = class UserRoute {
    */
 
   getRoutes = () => {
+    userRouter.use(this.authMiddleware.verifyToken);
     userRouter
       /**
        * @swagger
@@ -94,11 +96,7 @@ module.exports = class UserRoute {
        *                  - $ref: '#/components/schemas/UtilityField'
        *
        */
-      .get(
-        '/profile',
-        this.authMiddleware.verifyToken,
-        this.userController.profile,
-      )
+      .get('/profile', this.userController.profile)
       /**
        * @swagger
        * /v1/user/register-detail:
@@ -148,10 +146,53 @@ module.exports = class UserRoute {
        *               example: Registered user detail successfully
        *
        */
-      .post(
-        '/register-detail',
-        this.authMiddleware.verifyToken,
-        this.userController.registerDetail,
+      .post('/register-detail', this.userController.registerDetail)
+
+      /**
+       * @swagger
+       * /v1/user/mentors:
+       *   get:
+       *     summary: Get user mentors
+       *     tags: [User]
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - $ref: '#/components/parameters/PageQuery'
+       *       - $ref: '#/components/parameters/LimitQuery'
+       *       - $ref: '#/components/parameters/DisableLimitQuery'
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                 data:
+       *                   type: array
+       *                   items:
+       *                     type: object
+       *                     properties:
+       *                       id:
+       *                         type: integer
+       *                       fullName:
+       *                         type: string
+       *                       price:
+       *                         type: integer
+       *                       priceString:
+       *                         type: string
+       *                       profileUrl:
+       *                         type: string
+       *                       skills:
+       *                        type: array
+       *                        items:
+       *                          type: string
+       *                 pagination:
+       *                   $ref: '#/components/schemas/Pagination'
+       */
+      .get(
+        '/mentors',
+        this.paginationMiddleware,
+        this.userController.getUserMentor,
       );
 
     return userRouter;

@@ -37,7 +37,7 @@ module.exports = class Route {
           license: {
             name: 'Get the bearer token here',
             url: `${this.config.Meta.Protocol}://${this.config.Meta.Host}/dummy/login`,
-          }
+          },
         },
         basePath: '/',
         components: {
@@ -63,7 +63,7 @@ module.exports = class Route {
    *  schemas:
    *    UtilityField:
    *      type: object
-   *      properties:  
+   *      properties:
    *        isActive:
    *          type: boolean
    *        createdAt:
@@ -72,7 +72,7 @@ module.exports = class Route {
    *          example: 2020-12-31T23:59:59.999Z
    *        updatedAt:
    *          type: string
-   *          format: date-time 
+   *          format: date-time
    *          example: 2020-12-31T23:59:59.999Z
    *        deletedAt:
    *          type: string
@@ -88,6 +88,42 @@ module.exports = class Route {
    *        deletedBy:
    *          type: string
    *          nullable: true
+   *    Pagination:
+   *      type: object
+   *      properties:
+   *        currentPage:
+   *          type: integer
+   *        totalPages:
+   *          type: integer
+   *        currwntElements:
+   *          type: integer
+   *        totalElements:
+   *          type: integer
+   *  parameters:
+   *    PageQuery:
+   *      in: query
+   *      name: page
+   *      type: integer
+   *      required: false
+   *      description: Page number
+   *      default: 1
+   *    LimitQuery:
+   *      in: query
+   *      name: limit
+   *      type: integer
+   *      required: false
+   *      description: Number of items to return
+   *      default: 10
+   *    DisableLimitQuery:
+   *      in: query
+   *      name: disableLimit
+   *      type: boolean
+   *      required: false
+   *      description: Disable pagination
+   *      schema:
+   *        type: boolean
+   *        default: false
+   *        enum: [true, false]
    */
 
   registerRoutes = () => {
@@ -133,10 +169,10 @@ module.exports = class Route {
       this.config,
       this.log,
       this.controller.user,
-      this.middleware.auth,
+      this.middleware,
     ).getRoutes();
     this.app.use('/v1/user', userRoute);
-    
+
     this.app.use(this.middleware.errorHandler);
     this.app.use(this.middleware.notFoundHandler);
   };

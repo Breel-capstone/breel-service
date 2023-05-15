@@ -26,6 +26,20 @@ module.exports = class RouteHelper {
     req.context.responseCode = code;
   };
 
+  processPagination = (paginationQuery, currentElement, totalElement) => {
+    let { limit, offset } = paginationQuery;
+    limit = parseInt(limit) || 10;
+    offset = parseInt(offset) || 0;
+    const totalPage = Math.ceil(totalElement / limit);
+    
+    return {
+      currentElement,
+      totalElement,
+      currentPage: Math.ceil(offset / limit) + 1,
+      totalPage,
+    };
+  };
+
   httpRespError = (req, res, code, message) => {
     const now = new Date();
     const requestTimeElapsed =
