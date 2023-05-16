@@ -11,7 +11,7 @@ const db = {};
 let config;
 let sequelize;
 
-if (process.env.ENVIRONMENT == 'development') {
+if (!process.env.ENVIRONMENT || process.env.ENVIRONMENT == 'development') {
   config = require(__dirname + '../../../etc/sequelize-config.json')[env];
   if (config.use_env_variable) {
     sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -44,7 +44,6 @@ if (process.env.ENVIRONMENT == 'development') {
     },
   );
 }
-
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (

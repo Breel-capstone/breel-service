@@ -1,4 +1,5 @@
 const UserController = require('./user-controller');
+const ProjectController = require('./project-controller');
 
 module.exports = class Controller {
   constructor(log, config, helper, authLib, model) {
@@ -15,6 +16,7 @@ module.exports = class Controller {
       model.UserSkill,
       model.sequelize.transaction.bind(model.sequelize),
     );
+    this.project = new ProjectController(log, helper, model.Proposal, model.User);
   }
 
   ping = async (req, res) => {
