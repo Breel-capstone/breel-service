@@ -39,7 +39,7 @@ module.exports = class UserRoute {
    *      properties:
    *        skillName:
    *          type: string
-   *    UserProject:
+   *    UserProjectExperience:
    *      type: object
    *      properties:
    *        title:
@@ -132,11 +132,11 @@ module.exports = class UserRoute {
        *                 items:
        *                   type: object
        *                   $ref: '#/components/schemas/UserSkill'
-       *               userProjects:
+       *               userProjectExperiences:
        *                 type: array
        *                 items:
        *                   type: object
-       *                   $ref: '#/components/schemas/UserProject'
+       *                   $ref: '#/components/schemas/UserProjectExperience'
        *     responses:
        *       200:
        *         content:
@@ -150,7 +150,7 @@ module.exports = class UserRoute {
 
       /**
        * @swagger
-       * /v1/user/mentors:
+       * /v1/user/mentor:
        *   get:
        *     summary: Get user mentors
        *     tags: [User]
@@ -190,7 +190,7 @@ module.exports = class UserRoute {
        *                   $ref: '#/components/schemas/Pagination'
        */
       .get(
-        '/mentors',
+        '/mentor',
         this.paginationMiddleware,
         this.userController.getUserMentor,
       );

@@ -7,6 +7,7 @@ const Context = require('../../sdk/context');
 const AuthRoute = require('./auth-route');
 const UserRoute = require('./user-route');
 const ProjectRoute = require('./project-route');
+const MentorRoute = require('./mentor-route');
 
 module.exports = class Route {
   constructor(config, log, routeHelper, controller, middleware) {
@@ -30,6 +31,12 @@ module.exports = class Route {
     this.projectRoute = new ProjectRoute(
       this.log,
       this.controller.project,
+      this.middleware,
+    ).getRoutes();
+    this.mentorRoute = new MentorRoute(
+      this.config,
+      this.log,
+      this.controller.mentor,
       this.middleware,
     ).getRoutes();
 
@@ -179,6 +186,7 @@ module.exports = class Route {
     this.app.use('/v1/auth', this.authRoute);
     this.app.use('/v1/user', this.userRoute);
     this.app.use('/v1/project', this.projectRoute);
+    this.app.use('/v1/mentor', this.mentorRoute);
 
     this.app.use(this.middleware.errorHandler);
     this.app.use(this.middleware.notFoundHandler);
