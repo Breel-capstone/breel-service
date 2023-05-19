@@ -70,6 +70,10 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'userId',
       as: 'userProjectExperiences',
     });
+    User.hasOne(models.Mentor, {
+      foreignKey: 'userId',
+      as: 'mentor',
+    });
   };
   return User;
 };

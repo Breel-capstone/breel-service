@@ -388,8 +388,8 @@
             },
             "indexes": []
         },
-        "user_project": {
-            "tableName": "user_project",
+        "user_project_experience": {
+            "tableName": "user_project_experience",
             "schema": {
                 "id": {
                     "allowNull": false,
@@ -507,5 +507,5 @@
             "indexes": []
         }
     },
-    "revision": 5
+    "revision": 6
 }
