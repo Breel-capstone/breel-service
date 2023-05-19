@@ -12,7 +12,7 @@ module.exports = class Controller {
       authLib,
       model.User,
       model.UserExperience,
-      model.UserProject,
+      model.UserProjectExperience,
       model.UserSkill,
       model.sequelize.transaction.bind(model.sequelize),
     );

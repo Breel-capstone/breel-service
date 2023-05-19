@@ -39,7 +39,7 @@ module.exports = class UserRoute {
    *      properties:
    *        skillName:
    *          type: string
-   *    UserProject:
+   *    UserProjectExperience:
    *      type: object
    *      properties:
    *        title:
@@ -132,11 +132,11 @@ module.exports = class UserRoute {
        *                 items:
        *                   type: object
        *                   $ref: '#/components/schemas/UserSkill'
-       *               userProjects:
+       *               userProjectExperiences:
        *                 type: array
        *                 items:
        *                   type: object
-       *                   $ref: '#/components/schemas/UserProject'
+       *                   $ref: '#/components/schemas/UserProjectExperience'
        *     responses:
        *       200:
        *         content:

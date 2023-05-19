@@ -66,9 +66,9 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'userId',
       as: 'userExperiences',
     });
-    User.hasMany(models.UserProject, {
+    User.hasMany(models.UserProjectExperience, {
       foreignKey: 'userId',
-      as: 'userProjects',
+      as: 'userProjectExperiences',
     });
   };
   return User;

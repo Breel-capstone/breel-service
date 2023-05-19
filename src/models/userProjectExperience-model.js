@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const UserProject = sequelize.define(
-    'UserProject',
+  const UserProjectExperience = sequelize.define(
+    'UserProjectExperience',
     {
       userId: {
         type: Sequelize.INTEGER,
@@ -35,17 +35,17 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
       paranoid: true,
-      tableName: 'user_project',
+      tableName: 'user_project_experience',
       underscored: true,
       timestamps: true,
     },
   );
 
-  UserProject.associate = (models) => {
-    UserProject.belongsTo(models.User, {
+  UserProjectExperience.associate = (models) => {
+    UserProjectExperience.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
     });
   };
-  return UserProject;
+  return UserProjectExperience;
 };

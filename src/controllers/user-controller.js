@@ -10,7 +10,7 @@ module.exports = class UserController {
     authLib,
     userModel,
     userExperienceModel,
-    userProjectModel,
+    userProjectExperienceModel,
     userSkillModel,
     dbTransaction,
   ) {
@@ -20,7 +20,7 @@ module.exports = class UserController {
     this.authLib = authLib;
     this.userModel = userModel;
     this.userExperienceModel = userExperienceModel;
-    this.userProjectModel = userProjectModel;
+    this.userProjectExperienceModel = userProjectExperienceModel;
     this.userSkillModel = userSkillModel;
     this.dbTransaction = dbTransaction;
   }
@@ -107,7 +107,7 @@ module.exports = class UserController {
   registerDetail = async (req, res, next) => {
     let dbTransaction;
     try {
-      const { user, userSkills, userExperiences, userProjects } = req.body;
+      const { user, userSkills, userExperiences, userProjectExperiences } = req.body;
       const { user: currentUser } = req;
 
       const userInfo = await this.userModel.findOne({
@@ -144,9 +144,9 @@ module.exports = class UserController {
         },
       );
 
-      await this.userProjectModel.bulkCreate(
-        userProjects.map((userProject) => ({
-          ...userProject,
+      await this.userProjectExperienceModel.bulkCreate(
+        userProjectExperiences.map((userProjectExperience) => ({
+          ...userProjectExperience,
           userId: userInfo.id,
         })),
         {
