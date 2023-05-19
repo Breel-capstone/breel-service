@@ -6,6 +6,7 @@ const path = require('path');
 const Context = require('../../sdk/context');
 const AuthRoute = require('./auth-route');
 const UserRoute = require('./user-route');
+const ProjectRoute = require('./project-route');
 
 module.exports = class Route {
   constructor(config, log, routeHelper, controller, middleware) {
@@ -14,6 +15,23 @@ module.exports = class Route {
     this.helper = routeHelper;
     this.controller = controller;
     this.middleware = middleware;
+
+    this.userRoute = new UserRoute(
+      this.config,
+      this.log,
+      this.controller.user,
+      this.middleware,
+    ).getRoutes();
+    this.authRoute = new AuthRoute(
+      this.config,
+      this.log,
+      this.controller.user,
+    ).getRoutes();
+    this.projectRoute = new ProjectRoute(
+      this.log,
+      this.controller.project,
+      this.middleware,
+    ).getRoutes();
 
     this.app = express();
     this.app.use(express.json());
@@ -158,20 +176,9 @@ module.exports = class Route {
      */
     this.app.get('/ping', this.controller.ping);
 
-    const authRoute = new AuthRoute(
-      this.config,
-      this.log,
-      this.controller.user,
-    ).getRoutes();
-    this.app.use('/v1/auth', authRoute);
-
-    const userRoute = new UserRoute(
-      this.config,
-      this.log,
-      this.controller.user,
-      this.middleware,
-    ).getRoutes();
-    this.app.use('/v1/user', userRoute);
+    this.app.use('/v1/auth', this.authRoute);
+    this.app.use('/v1/user', this.userRoute);
+    this.app.use('/v1/project', this.projectRoute);
 
     this.app.use(this.middleware.errorHandler);
     this.app.use(this.middleware.notFoundHandler);
