@@ -2,10 +2,6 @@ module.exports = (sequelize, Sequelize) => {
   const Mentor = sequelize.define(
     'Mentor',
     {
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,

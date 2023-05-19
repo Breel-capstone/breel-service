@@ -150,7 +150,7 @@ module.exports = class UserRoute {
 
       /**
        * @swagger
-       * /v1/user/mentors:
+       * /v1/user/mentor:
        *   get:
        *     summary: Get user mentors
        *     tags: [User]
@@ -190,7 +190,7 @@ module.exports = class UserRoute {
        *                   $ref: '#/components/schemas/Pagination'
        */
       .get(
-        '/mentors',
+        '/mentor',
         this.paginationMiddleware,
         this.userController.getUserMentor,
       );
