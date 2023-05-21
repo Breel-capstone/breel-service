@@ -198,7 +198,7 @@ module.exports = class UserRoute {
        * @swagger
        * /v1/user/profile/{userId}:
        *   get:
-       *     summary: Get profile by UID
+       *     summary: Get profile by ID
        *     tags: [User]
        *     security:
        *       - bearerAuth: []
@@ -207,7 +207,8 @@ module.exports = class UserRoute {
        *         name: userId  
        *         required: trueDS 
        *         schema:
-       *           type: string
+       *           type: integer
+       *           minimum: 1
        *         description: The user ID
        *       - $ref: '#/components/parameters/PageQuery'
        *       - $ref: '#/components/parameters/LimitQuery'

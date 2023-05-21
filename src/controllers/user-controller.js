@@ -109,7 +109,7 @@ module.exports = class UserController {
       let userInfo;
       userInfo = await this.userModel.findOne({
         logging: this.log.logSqlQuery(req.context),
-        where: { uid: req.params.userId },
+        where: { id: req.params.userId },
       });
 
       // User registered in firebase but not in database, ignore
