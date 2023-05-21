@@ -193,6 +193,59 @@ module.exports = class UserRoute {
         '/mentors',
         this.paginationMiddleware,
         this.userController.getUserMentor,
+      )
+      /**
+       * @swagger
+       * /v1/user/profile/{userId}:
+       *   get:
+       *     summary: Get profile by UID
+       *     tags: [User]
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: id   # Note the name is the same as in the path
+       *         required: true
+       *         schema:
+       *           type: integer
+       *           minimum: 1
+       *         description: The user ID
+       *       - $ref: '#/components/parameters/PageQuery'
+       *       - $ref: '#/components/parameters/LimitQuery'
+       *       - $ref: '#/components/parameters/DisableLimitQuery'
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                 data:
+       *                   type: array
+       *                   items:
+       *                     type: object
+       *                     properties:
+       *                       id:
+       *                         type: integer
+       *                       fullName:
+       *                         type: string
+       *                       price:
+       *                         type: integer
+       *                       priceString:
+       *                         type: string
+       *                       profileUrl:
+       *                         type: string
+       *                       skills:
+       *                        type: array
+       *                        items:
+       *                          type: string
+       *                 pagination:
+       *                   $ref: '#/components/schemas/Pagination'
+       */
+      .get(
+        '/profile/:userId',
+        this.paginationMiddleware,
+        this.userController.profileById,
       );
 
     return userRouter;

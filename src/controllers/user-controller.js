@@ -104,6 +104,24 @@ module.exports = class UserController {
     }
   };
 
+  profileById = async (req, res, next) => {
+    try {
+      userInfo = await this.userModel.findOne({
+        logging: this.log.logSqlQuery(req.param.userId),
+        where: { uid: user.uid },
+      });
+
+      // User registered in firebase but not in database, ignore
+      if (!userInfo) {
+        throw new ErrorLib(`user with id ${req.param.userId} not found`, 500);
+      }
+
+      this.helper.httpRespSuccess(req, res, 200, userInfo, null);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   registerDetail = async (req, res, next) => {
     let dbTransaction;
     try {
