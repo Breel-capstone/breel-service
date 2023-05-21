@@ -193,6 +193,41 @@ module.exports = class UserRoute {
         '/mentor',
         this.paginationMiddleware,
         this.userController.getUserMentor,
+      )
+      /**
+       * @swagger
+       * /v1/user/profile/{userId}:
+       *   get:
+       *     summary: Get profile by ID
+       *     tags: [User]
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: userId  
+       *         required: trueDS 
+       *         schema:
+       *           type: integer
+       *           minimum: 1
+       *         description: The user ID
+       *       - $ref: '#/components/parameters/PageQuery'
+       *       - $ref: '#/components/parameters/LimitQuery'
+       *       - $ref: '#/components/parameters/DisableLimitQuery'
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               allOf:
+       *                 - $ref: '#/components/schemas/User'
+       *                 - $ref: '#/components/schemas/UtilityField'
+       * 
+       */
+      .get(
+        '/profile/:userId',
+        this.paginationMiddleware,
+        this.userController.profileById,
       );
 
     return userRouter;
