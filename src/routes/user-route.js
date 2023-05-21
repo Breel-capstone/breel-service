@@ -218,28 +218,10 @@ module.exports = class UserRoute {
        *           application/json:
        *             schema:
        *               type: object
-       *               properties:
-       *                 data:
-       *                   type: array
-       *                   items:
-       *                     type: object
-       *                     properties:
-       *                       id:
-       *                         type: integer
-       *                       fullName:
-       *                         type: string
-       *                       price:
-       *                         type: integer
-       *                       priceString:
-       *                         type: string
-       *                       profileUrl:
-       *                         type: string
-       *                       skills:
-       *                        type: array
-       *                        items:
-       *                          type: string
-       *                 pagination:
-       *                   $ref: '#/components/schemas/Pagination'
+       *               allOf:
+       *                 - $ref: '#/components/schemas/User'
+       *                 - $ref: '#/components/schemas/UtilityField'
+       * 
        */
       .get(
         '/profile/:userId',
