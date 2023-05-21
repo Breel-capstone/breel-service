@@ -204,11 +204,10 @@ module.exports = class UserRoute {
        *       - bearerAuth: []
        *     parameters:
        *       - in: path
-       *         name: id   # Note the name is the same as in the path
-       *         required: true
+       *         name: userId  
+       *         required: trueDS 
        *         schema:
-       *           type: integer
-       *           minimum: 1
+       *           type: string
        *         description: The user ID
        *       - $ref: '#/components/parameters/PageQuery'
        *       - $ref: '#/components/parameters/LimitQuery'
