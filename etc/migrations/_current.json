@@ -99,17 +99,6 @@
                 "deletedAt": {
                     "field": "deleted_at",
                     "seqType": "Sequelize.DATE"
-                },
-                "userId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "user",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "user_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -729,5 +718,5 @@
             "indexes": []
         }
     },
-    "revision": 12
+    "revision": 13
 }
