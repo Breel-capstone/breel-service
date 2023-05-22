@@ -2,7 +2,7 @@ module.exports = (sequelize, Sequelize) => {
   const Project = sequelize.define(
     'Project',
     {
-      userId: {
+      clientId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -27,6 +27,18 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      status: {
+        type: Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai'),
+        defaultValue: 'Mencari',
+      },
+      mentorId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      assigneeId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
 
       // Utility columns
       createdBy: {
@@ -49,8 +61,12 @@ module.exports = (sequelize, Sequelize) => {
 
   Project.associate = (models) => {
     Project.belongsTo(models.User, {
-      foreignKey: 'userId',
+      foreignKey: 'clientId',
       as: 'user',
+    });
+    Project.hasMany(models.Proposal, {
+      foreignKey: 'projectId',
+      as: 'proposals',
     });
   };
   return Project;

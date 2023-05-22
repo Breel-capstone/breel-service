@@ -1,23 +1,25 @@
 module.exports = (sequelize, Sequelize) => {
-  const Mentor = sequelize.define(
-    'Mentor',
+  const ProjectMentorship = sequelize.define(
+    'ProjectMentorship',
     {
-      freelancerId: {
+      projectId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      mentorId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'user',
           key: 'id',
         },
-        onDelete: 'CASCADE',
       },
-      price: {
-        type: Sequelize.INTEGER,
+      budgetPercentage: {
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
-      durationMonth: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+      restriction: {
+        type: Sequelize.TEXT,
       },
 
       // Utility columns
@@ -33,11 +35,18 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
       paranoid: true,
-      tableName: 'mentor',
+      tableName: 'project_mentorship',
       underscored: true,
       timestamps: true,
     },
   );
 
-  return Mentor;
+  ProjectMentorship.associate = (models) => {
+    ProjectMentorship.belongsTo(models.User, {
+      foreignKey: 'mentorId',
+      as: 'mentor',
+    });
+  };
+
+  return ProjectMentorship;
 };
