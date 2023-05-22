@@ -12,6 +12,7 @@ module.exports = class ProjectController {
     this.proposalModel = proposalModel;
     this.userModel = userModel;
     this.projectModel = projectModel;
+    this.projectMentorshipModel = projectMentorshipModel;
   }
 
   createProjectProposal = async (req, res, next) => {
