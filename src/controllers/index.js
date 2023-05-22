@@ -16,12 +16,13 @@ module.exports = class Controller {
       model.UserProjectExperience,
       model.UserSkill,
       model.sequelize.transaction.bind(model.sequelize),
-    );
+    ); 
     this.project = new ProjectController(
       log,
       helper,
       model.Proposal,
       model.User,
+      model.Project
     );
     this.mentor = new MentorController(log, helper, model.Mentor, model.User);
   }

@@ -1,9 +1,10 @@
 module.exports = class ProjectController {
-  constructor(log, helper, proposalModel, userModel) {
+  constructor(log, helper, proposalModel, userModel, projectModel) {
     this.log = log;
     this.helper = helper;
     this.proposalModel = proposalModel;
     this.userModel = userModel;
+    this.projectModel = projectModel;
   }
 
   createProjectProposal = async (req, res, next) => {
@@ -33,6 +34,35 @@ module.exports = class ProjectController {
       );
 
       this.helper.httpRespSuccess(req, res, 201, 'Proposal created', null);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  createProject = async (req, res, next) => {
+    const { uid } = req.user;
+    const { title, description, durationMonth, budget } = req.body;
+
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+      await this.projectModel.create(
+        {
+          userId: user.id,
+          title,
+          description,
+          durationMonth,
+          budget,
+        },
+        {
+          logging: this.log.logSqlQuery(req.context),
+        },
+      );
+
+      this.helper.httpRespSuccess(req, res, 201, 'Project created', null);
     } catch (error) {
       next(error);
     }

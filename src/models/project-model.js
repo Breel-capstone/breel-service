@@ -1,16 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
-  const Proposal = sequelize.define(
-    'Proposal',
+  const Project = sequelize.define(
+    'Project',
     {
-      projectId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'project',
-          key: 'id',
-        },
-        onDelete: 'CASCADE',
-      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -20,20 +11,21 @@ module.exports = (sequelize, Sequelize) => {
         },
         onDelete: 'CASCADE',
       },
-      price: {
-        type: Sequelize.INTEGER,
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      description: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       durationMonth: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      coverLetter: {
-        type: Sequelize.TEXT,
-      },
-      isApproved: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      budget: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
 
       // Utility columns
@@ -49,21 +41,17 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
       paranoid: true,
-      tableName: 'proposal',
+      tableName: 'project',
       underscored: true,
       timestamps: true,
     },
   );
 
-  Proposal.associate = (models) => {
-    Proposal.belongsTo(models.User, {
+  Project.associate = (models) => {
+    Project.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
     });
-    Proposal.belongsTo(models.Project, {
-      foreignKey: 'projectId',
-      as: 'project',
-    });
   };
-  return Proposal;
+  return Project;
 };
