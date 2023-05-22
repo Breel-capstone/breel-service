@@ -104,6 +104,64 @@
             },
             "indexes": []
         },
+        "project": {
+            "tableName": "project",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "title": {
+                    "allowNull": false,
+                    "field": "title",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "description": {
+                    "allowNull": false,
+                    "field": "description",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "durationMonth": {
+                    "allowNull": false,
+                    "field": "duration_month",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "budget": {
+                    "field": "budget",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "proposal": {
             "tableName": "proposal",
             "schema": {
@@ -116,7 +174,13 @@
                 },
                 "projectId": {
                     "allowNull": false,
+                    "references": {
+                        "model": "project",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
                     "field": "project_id",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "userId": {
@@ -170,17 +234,6 @@
                 "deletedAt": {
                     "field": "deleted_at",
                     "seqType": "Sequelize.DATE"
-                },
-                "roleId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "role",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "role_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -578,5 +631,5 @@
             "indexes": []
         }
     },
-    "revision": 8
+    "revision": 1
 }
