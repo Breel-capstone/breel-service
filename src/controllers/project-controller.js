@@ -1,5 +1,12 @@
 module.exports = class ProjectController {
-  constructor(log, helper, proposalModel, userModel, projectModel) {
+  constructor(
+    log,
+    helper,
+    proposalModel,
+    userModel,
+    projectModel,
+    projectMentorshipModel,
+  ) {
     this.log = log;
     this.helper = helper;
     this.proposalModel = proposalModel;
@@ -21,7 +28,7 @@ module.exports = class ProjectController {
       await this.proposalModel.create(
         {
           projectId,
-          userId: user.id,
+          freelancerId: user.id,
           price,
           durationMonth,
           coverLetter,
@@ -70,23 +77,118 @@ module.exports = class ProjectController {
 
   updateProposalStatus = async (req, res, next) => {
     const { projectId, proposalId } = req.params;
-    const { isApproved } = req.body;
-    try {
-      // TODO: check if project belongs to user
-      await this.proposalModel.update(
-        {
-          isApproved,
-        },
-        {
-          logging: this.log.logSqlQuery(req.context),
-          where: {
-            id: proposalId,
-            projectId,
-          },
-        },
-      );
+    const { status, applicantId } = req.body;
+    const { uid } = req.user;
 
-      this.helper.httpRespSuccess(req, res, 200, null, null);
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id', 'roleId'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (user.roleId !== 2) {
+        this.helper.httpRespError(
+          req,
+          res,
+          403,
+          'You do not have permission to update this proposal',
+          null,
+        );
+        return;
+      }
+
+      const project = await this.projectModel.findOne({
+        where: {
+          id: projectId,
+          mentorId: user.id,
+        },
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (!project) {
+        this.helper.httpRespError(
+          req,
+          res,
+          403,
+          'You do not have permission to update this proposal',
+          null,
+        );
+        return;
+      }
+
+      const updateQuery = {
+        status,
+        updatedBy: `${user.id}`,
+      };
+
+      if (status === 'Accepted') {
+        updateQuery.assigneeId = applicantId;
+      }
+
+      await this.proposalModel.update(updateQuery, {
+        where: {
+          id: proposalId,
+          projectId,
+        },
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      this.helper.httpRespSuccess(req, res, 200, `Proposal ${status}`, null);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  createProjectMentorship = async (req, res, next) => {
+    const { uid } = req.user;
+    const { projectId } = req.params;
+    const { budgetPercentage, restriction } = req.body;
+
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id', 'roleId'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+      if (user.roleId !== 2) {
+        this.helper.httpRespError(
+          req,
+          res,
+          403,
+          'Forbidden',
+          'You are not a mentor',
+        );
+        return;
+      }
+
+      const project = await this.projectModel.findOne({
+        where: {
+          id: projectId,
+          mentorId: user.id,
+        },
+        attributes: ['id'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+      if (!project) {
+        this.helper.httpRespError(
+          req,
+          res,
+          403,
+          'Forbidden',
+          'You are not the mentor of this project',
+        );
+        return;
+      }
+
+      await this.projectMentorshipModel.create({
+        projectId,
+        mentorId: user.id,
+        budgetPercentage,
+        restriction,
+      });
+
+      this.helper.httpRespSuccess(req, res, 201, 'Proposal created', null);
     } catch (error) {
       next(error);
     }
