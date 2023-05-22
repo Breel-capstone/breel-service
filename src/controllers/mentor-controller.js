@@ -1,3 +1,5 @@
+const ErrorLib = require('../../sdk/errorlib');
+
 module.exports = class MentorController {
   constructor(log, helper, mentorModel, userModel) {
     this.log = log;
@@ -33,6 +35,22 @@ module.exports = class MentorController {
       );
 
       this.helper.httpRespSuccess(req, res, 201, 'Mentor created', null);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getMentors = async (req, res, next) => {
+    try {
+      let mentorList;
+      mentorList = await this.mentorModel.findAll();
+
+      // User registered in firebase but not in database, ignore
+      if (!mentorList) {
+        throw new ErrorLib('No Mentors existed', 404);
+      }
+
+      this.helper.httpRespSuccess(req, res, 200, mentorList, null);
     } catch (error) {
       next(error);
     }

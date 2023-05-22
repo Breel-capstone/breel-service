@@ -114,7 +114,7 @@ module.exports = class UserController {
 
       // User registered in firebase but not in database, ignore
       if (!userInfo) {
-        throw new ErrorLib(`user with id ${req.param.userId} not found`, 500);
+        throw new ErrorLib(`user with id ${req.param.userId} not found`, 404);
       }
 
       this.helper.httpRespSuccess(req, res, 200, userInfo, null);
