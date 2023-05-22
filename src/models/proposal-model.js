@@ -7,9 +7,14 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         // TODO: add reference to project table when it's ready
       },
-      userId: {
+      freelancerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
       },
       price: {
         type: Sequelize.INTEGER,
@@ -47,21 +52,9 @@ module.exports = (sequelize, Sequelize) => {
   );
 
   Proposal.associate = (models) => {
-    Proposal.belongsTo(models.Role, {
-      foreignKey: 'roleId',
-      as: 'role',
-    });
-    Proposal.hasMany(models.UserSkill, {
-      foreignKey: 'userId',
-      as: 'userSkills',
-    });
-    Proposal.hasMany(models.UserExperience, {
-      foreignKey: 'userId',
-      as: 'userExperiences',
-    });
-    Proposal.hasMany(models.UserProjectExperience, {
-      foreignKey: 'userId',
-      as: 'userProjectExperiences',
+    Proposal.belongsTo(models.User, {
+      foreignKey: 'freelancerId',
+      as: 'freelancer',
     });
   };
   return Proposal;

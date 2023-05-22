@@ -2,7 +2,7 @@ module.exports = (sequelize, Sequelize) => {
   const Mentor = sequelize.define(
     'Mentor',
     {
-      userId: {
+      freelancerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -38,12 +38,6 @@ module.exports = (sequelize, Sequelize) => {
       timestamps: true,
     },
   );
-
-  Mentor.associate = (models) => {
-    Mentor.hasOne(models.User, {
-      foreignKey: 'userId',
-      as: 'user',
-    });
-  };
+  
   return Mentor;
 };

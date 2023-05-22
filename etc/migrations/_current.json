@@ -54,14 +54,14 @@
                     "field": "id",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "userId": {
+                "freelancerId": {
                     "allowNull": false,
                     "references": {
                         "model": "user",
                         "key": "id"
                     },
                     "onDelete": "CASCADE",
-                    "field": "user_id",
+                    "field": "freelancer_id",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
@@ -119,9 +119,15 @@
                     "field": "project_id",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "userId": {
+                "freelancerId": {
                     "allowNull": false,
-                    "field": "user_id",
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "freelancer_id",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "price": {
@@ -170,17 +176,6 @@
                 "deletedAt": {
                     "field": "deleted_at",
                     "seqType": "Sequelize.DATE"
-                },
-                "roleId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "role",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "role_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -365,17 +360,6 @@
                 "deletedAt": {
                     "field": "deleted_at",
                     "seqType": "Sequelize.DATE"
-                },
-                "userId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "mentor",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "user_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -578,5 +562,5 @@
             "indexes": []
         }
     },
-    "revision": 8
+    "revision": 9
 }

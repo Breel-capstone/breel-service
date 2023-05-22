@@ -54,11 +54,6 @@
                     "field": "id",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "name": {
-                    "allowNull": false,
-                    "field": "name",
-                    "seqType": "Sequelize.STRING"
-                },
                 "userId": {
                     "allowNull": false,
                     "references": {
@@ -583,5 +578,5 @@
             "indexes": []
         }
     },
-    "revision": 7
+    "revision": 8
 }

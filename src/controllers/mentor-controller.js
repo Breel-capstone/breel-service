@@ -21,7 +21,7 @@ module.exports = class MentorController {
 
       await this.mentorModel.create(
         {
-          userId: user.id,
+          freelancerId: user.id,
           price,
           durationMonth,
           createdBy: `${user.id}`,

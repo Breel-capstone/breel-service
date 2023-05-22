@@ -20,7 +20,7 @@ module.exports = class ProjectController {
       await this.proposalModel.create(
         {
           projectId,
-          userId: user.id,
+          freelancerId: user.id,
           price,
           durationMonth,
           coverLetter,
@@ -41,8 +41,15 @@ module.exports = class ProjectController {
   updateProposalStatus = async (req, res, next) => {
     const { projectId, proposalId } = req.params;
     const { isApproved } = req.body;
+    const { uid } = req.user;
+
     try {
-      // TODO: check if project belongs to user
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
       await this.proposalModel.update(
         {
           isApproved,
@@ -52,6 +59,7 @@ module.exports = class ProjectController {
           where: {
             id: proposalId,
             projectId,
+            freelancerId: user.id,
           },
         },
       );
