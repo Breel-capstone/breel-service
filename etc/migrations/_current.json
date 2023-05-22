@@ -104,6 +104,156 @@
             },
             "indexes": []
         },
+        "project": {
+            "tableName": "project",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "clientId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "client_id",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "title": {
+                    "allowNull": false,
+                    "field": "title",
+                    "seqType": "Sequelize.STRING"
+                },
+                "description": {
+                    "field": "description",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "skills": {
+                    "field": "skills",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "status": {
+                    "defaultValue": {
+                        "value": "Mencari"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai')"
+                },
+                "price": {
+                    "allowNull": false,
+                    "field": "price",
+                    "seqType": "Sequelize.BIGINT"
+                },
+                "durationMonth": {
+                    "allowNull": false,
+                    "field": "duration_month",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "project_mentorship": {
+            "tableName": "project_mentorship",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "projectId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "project",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "project_id",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "mentorId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "field": "mentor_id",
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "budgetPercentage": {
+                    "allowNull": false,
+                    "field": "budget_percentage",
+                    "seqType": "Sequelize.FLOAT"
+                },
+                "restriction": {
+                    "field": "restriction",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "proposal": {
             "tableName": "proposal",
             "schema": {
@@ -117,6 +267,12 @@
                 "projectId": {
                     "allowNull": false,
                     "field": "project_id",
+                    "references": {
+                        "model": "project",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "freelancerId": {
@@ -562,5 +718,5 @@
             "indexes": []
         }
     },
-    "revision": 9
+    "revision": 10
 }

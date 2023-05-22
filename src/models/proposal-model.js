@@ -52,6 +52,10 @@ module.exports = (sequelize, Sequelize) => {
   );
 
   Proposal.associate = (models) => {
+    Proposal.belongsTo(models.Project, {
+      foreignKey: 'projectId',
+      as: 'project',
+    });
     Proposal.belongsTo(models.User, {
       foreignKey: 'freelancerId',
       as: 'freelancer',
