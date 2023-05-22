@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         onDelete: 'CASCADE',
       },
-      userId: {
+      freelancerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -31,9 +31,9 @@ module.exports = (sequelize, Sequelize) => {
       coverLetter: {
         type: Sequelize.TEXT,
       },
-      isApproved: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      status: {
+        type: Sequelize.ENUM('Pending', 'Accepted', 'Rejected'),
+        defaultValue: 'Pending',
       },
 
       // Utility columns
@@ -57,8 +57,8 @@ module.exports = (sequelize, Sequelize) => {
 
   Proposal.associate = (models) => {
     Proposal.belongsTo(models.User, {
-      foreignKey: 'userId',
-      as: 'user',
+      foreignKey: 'freelancerId',
+      as: 'freelancer',
     });
     Proposal.belongsTo(models.Project, {
       foreignKey: 'projectId',

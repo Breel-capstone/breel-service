@@ -54,15 +54,14 @@
                     "field": "id",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "userId": {
+                "freelancerId": {
                     "allowNull": false,
                     "references": {
                         "model": "user",
                         "key": "id"
                     },
                     "onDelete": "CASCADE",
-                    "field": "user_id",
-                    "onUpdate": "CASCADE",
+                    "field": "freelancer_id",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "price": {
@@ -100,6 +99,17 @@
                 "deletedAt": {
                     "field": "deleted_at",
                     "seqType": "Sequelize.DATE"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -114,14 +124,14 @@
                     "field": "id",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "userId": {
+                "clientId": {
                     "allowNull": false,
                     "references": {
                         "model": "user",
                         "key": "id"
                     },
                     "onDelete": "CASCADE",
-                    "field": "user_id",
+                    "field": "client_id",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
@@ -144,6 +154,87 @@
                     "allowNull": false,
                     "field": "budget",
                     "seqType": "Sequelize.INTEGER"
+                },
+                "status": {
+                    "defaultValue": {
+                        "value": "Mencari"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai')"
+                },
+                "mentorId": {
+                    "allowNull": true,
+                    "field": "mentor_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "assigneeId": {
+                    "allowNull": true,
+                    "field": "assignee_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "project_mentorship": {
+            "tableName": "project_mentorship",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "projectId": {
+                    "allowNull": false,
+                    "field": "project_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "mentorId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "field": "mentor_id",
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "budgetPercentage": {
+                    "allowNull": false,
+                    "field": "budget_percentage",
+                    "seqType": "Sequelize.FLOAT"
+                },
+                "restriction": {
+                    "field": "restriction",
+                    "seqType": "Sequelize.TEXT"
                 },
                 "createdBy": {
                     "field": "created_by",
@@ -195,14 +286,14 @@
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "userId": {
+                "freelancerId": {
                     "allowNull": false,
                     "references": {
                         "model": "user",
                         "key": "id"
                     },
                     "onDelete": "CASCADE",
-                    "field": "user_id",
+                    "field": "freelancer_id",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
@@ -220,12 +311,12 @@
                     "field": "cover_letter",
                     "seqType": "Sequelize.TEXT"
                 },
-                "isApproved": {
+                "status": {
                     "defaultValue": {
-                        "value": false
+                        "value": "Pending"
                     },
-                    "field": "is_approved",
-                    "seqType": "Sequelize.BOOLEAN"
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('Pending', 'Accepted', 'Rejected')"
                 },
                 "createdBy": {
                     "field": "created_by",
@@ -436,17 +527,6 @@
                 "deletedAt": {
                     "field": "deleted_at",
                     "seqType": "Sequelize.DATE"
-                },
-                "userId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "mentor",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "user_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -649,5 +729,5 @@
             "indexes": []
         }
     },
-    "revision": 11
+    "revision": 12
 }

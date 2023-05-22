@@ -22,7 +22,8 @@ module.exports = class Controller {
       helper,
       model.Proposal,
       model.User,
-      model.Project
+      model.Project,
+      model.ProjectMentorship,
     );
     this.mentor = new MentorController(log, helper, model.Mentor, model.User);
   }
