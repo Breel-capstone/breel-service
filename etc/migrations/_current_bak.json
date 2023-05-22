@@ -128,7 +128,7 @@
                 "title": {
                     "allowNull": false,
                     "field": "title",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "description": {
                     "allowNull": false,
@@ -649,5 +649,5 @@
             "indexes": []
         }
     },
-    "revision": 11
+    "revision": 10
 }

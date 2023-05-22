@@ -2,12 +2,21 @@ module.exports = (sequelize, Sequelize) => {
   const Project = sequelize.define(
     'Project',
     {
-      title: {
+      userId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+      },
+      title: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       description: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       durationMonth: {
@@ -16,6 +25,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       budget: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
 
       // Utility columns
@@ -38,6 +48,10 @@ module.exports = (sequelize, Sequelize) => {
   );
 
   Project.associate = (models) => {
+    Project.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user',
+    });
   };
   return Project;
 };

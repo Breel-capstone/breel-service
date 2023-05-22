@@ -14,6 +14,11 @@ module.exports = (sequelize, Sequelize) => {
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
       },
       price: {
         type: Sequelize.INTEGER,
@@ -51,6 +56,10 @@ module.exports = (sequelize, Sequelize) => {
   );
 
   Proposal.associate = (models) => {
+    Proposal.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user',
+    });
     Proposal.belongsTo(models.Project, {
       foreignKey: 'projectId',
       as: 'project',

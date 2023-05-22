@@ -45,6 +45,41 @@ module.exports = class ProjectRoute {
       .post(
         '/:projectId/proposal',
         this.projectController.createProjectProposal,
+      )
+
+      /**
+       * @swagger
+       * /v1/project/:
+       *   post:
+       *     tags: [Project]
+       *     summary: Create a new porject
+       *     security:
+       *       - bearerAuth: []
+       *     requestBody:
+       *       content:
+       *         application/json:
+       *           schema:
+       *             type: object
+       *             properties:
+       *              title:
+       *                type: string
+       *              description:
+       *                type: string
+       *              durationMonth:
+       *                type: integer
+       *              budget:
+       *                type: integer
+       *     responses:
+       *       201:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: string
+       *               example: Project created
+       */
+      .post(
+        '/',
+        this.projectController.createProject,
       );
 
     return projectRouter;

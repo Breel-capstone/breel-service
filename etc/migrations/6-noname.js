@@ -5,78 +5,29 @@ var Sequelize = require('sequelize');
 /**
  * Actions summary:
  *
- * createTable "action", deps: []
- * createTable "role", deps: []
- * createTable "role_action", deps: [role, action]
+ * dropTable "user_project"
+ * createTable "user_project_experience", deps: [user]
  *
  **/
 
 var info = {
-  revision: 1,
+  revision: 6,
   name: 'noname',
-  created: '2023-05-10T11:10:18.227Z',
+  created: '2023-05-19T09:53:25.776Z',
   comment: ''
 };
 
 var migrationCommands = function(transaction) {
   return [{
-    fn: 'createTable',
-    params: [
-      'action',
-      {
-        id: {
-          type: Sequelize.INTEGER,
-          field: 'id',
-          autoIncrement: true,
-          primaryKey: true,
-          allowNull: false
-        },
-        name: {
-          type: Sequelize.STRING,
-          field: 'name',
-          allowNull: false
-        },
-        isActive: {
-          type: Sequelize.BOOLEAN,
-          field: 'is_active',
-          defaultValue: true
-        },
-        createdBy: {
-          type: Sequelize.STRING,
-          field: 'created_by'
-        },
-        updatedBy: {
-          type: Sequelize.STRING,
-          field: 'updated_by'
-        },
-        deletedBy: {
-          type: Sequelize.STRING,
-          field: 'deleted_by'
-        },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'created_at',
-          allowNull: false
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updated_at',
-          allowNull: false
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deleted_at'
-        }
-      },
-      {
-        transaction: transaction
-      }
-    ]
+    fn: 'dropTable',
+    params: ['user_project', {
+      transaction: transaction
+    }]
   },
   {
     fn: 'createTable',
     params: [
-      'role',
+      'user_project_experience',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -85,84 +36,29 @@ var migrationCommands = function(transaction) {
           primaryKey: true,
           allowNull: false
         },
-        name: {
-          type: Sequelize.STRING,
-          field: 'name',
-          allowNull: false
-        },
-        isActive: {
-          type: Sequelize.BOOLEAN,
-          field: 'is_active',
-          defaultValue: true
-        },
-        createdBy: {
-          type: Sequelize.STRING,
-          field: 'created_by'
-        },
-        updatedBy: {
-          type: Sequelize.STRING,
-          field: 'updated_by'
-        },
-        deletedBy: {
-          type: Sequelize.STRING,
-          field: 'deleted_by'
-        },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'created_at',
-          allowNull: false
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updated_at',
-          allowNull: false
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deleted_at'
-        }
-      },
-      {
-        transaction: transaction
-      }
-    ]
-  },
-  {
-    fn: 'createTable',
-    params: [
-      'role_action',
-      {
-        id: {
+        userId: {
           type: Sequelize.INTEGER,
-          field: 'id',
-          autoIncrement: true,
-          primaryKey: true,
-          allowNull: false
-        },
-        roleId: {
-          type: Sequelize.INTEGER,
-          field: 'role_id',
+          onUpdate: 'CASCADE',
+          field: 'user_id',
           onDelete: 'CASCADE',
           references: {
-            model: 'role',
+            model: 'user',
             key: 'id'
           },
           allowNull: false
         },
-        actionId: {
-          type: Sequelize.INTEGER,
-          field: 'action_id',
-          onDelete: 'CASCADE',
-          references: {
-            model: 'action',
-            key: 'id'
-          },
+        title: {
+          type: Sequelize.STRING,
+          field: 'title',
           allowNull: false
         },
-        isActive: {
-          type: Sequelize.BOOLEAN,
-          field: 'is_active',
-          defaultValue: true
+        thumbnailUrl: {
+          type: Sequelize.TEXT,
+          field: 'thumbnail_url'
+        },
+        description: {
+          type: Sequelize.TEXT,
+          field: 'description'
         },
         createdBy: {
           type: Sequelize.STRING,
@@ -201,21 +97,77 @@ var migrationCommands = function(transaction) {
 var rollbackCommands = function(transaction) {
   return [{
     fn: 'dropTable',
-    params: ['action', {
+    params: ['user_project_experience', {
       transaction: transaction
     }]
   },
   {
-    fn: 'dropTable',
-    params: ['role', {
-      transaction: transaction
-    }]
-  },
-  {
-    fn: 'dropTable',
-    params: ['role_action', {
-      transaction: transaction
-    }]
+    fn: 'createTable',
+    params: [
+      'user_project',
+      {
+        id: {
+          type: Sequelize.INTEGER,
+          field: 'id',
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false
+        },
+        userId: {
+          type: Sequelize.INTEGER,
+          onUpdate: 'CASCADE',
+          field: 'user_id',
+          onDelete: 'CASCADE',
+          references: {
+            model: 'user',
+            key: 'id'
+          },
+          allowNull: false
+        },
+        title: {
+          type: Sequelize.STRING,
+          field: 'title',
+          allowNull: false
+        },
+        thumbnailUrl: {
+          type: Sequelize.TEXT,
+          field: 'thumbnail_url'
+        },
+        description: {
+          type: Sequelize.TEXT,
+          field: 'description'
+        },
+        createdBy: {
+          type: Sequelize.STRING,
+          field: 'created_by'
+        },
+        updatedBy: {
+          type: Sequelize.STRING,
+          field: 'updated_by'
+        },
+        deletedBy: {
+          type: Sequelize.STRING,
+          field: 'deleted_by'
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: 'created_at',
+          allowNull: false
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: 'updated_at',
+          allowNull: false
+        },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deleted_at'
+        }
+      },
+      {
+        transaction: transaction
+      }
+    ]
   }
   ];
 };

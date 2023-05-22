@@ -5,16 +5,17 @@ var Sequelize = require('sequelize');
 /**
  * Actions summary:
  *
- * createTable "action", deps: []
- * createTable "role", deps: []
- * createTable "role_action", deps: [role, action]
+ * createTable "user", deps: [role]
+ * createTable "user_experience", deps: [user]
+ * createTable "user_project", deps: [user]
+ * createTable "user_skill", deps: [user]
  *
  **/
 
 var info = {
-  revision: 1,
+  revision: 2,
   name: 'noname',
-  created: '2023-05-10T11:10:18.227Z',
+  created: '2023-05-10T11:35:46.415Z',
   comment: ''
 };
 
@@ -22,7 +23,7 @@ var migrationCommands = function(transaction) {
   return [{
     fn: 'createTable',
     params: [
-      'action',
+      'user',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -31,132 +32,272 @@ var migrationCommands = function(transaction) {
           primaryKey: true,
           allowNull: false
         },
-        name: {
+        uid: {
           type: Sequelize.STRING,
-          field: 'name',
+          field: 'uid',
+          unique: true,
           allowNull: false
         },
-        isActive: {
-          type: Sequelize.BOOLEAN,
-          field: 'is_active',
-          defaultValue: true
-        },
-        createdBy: {
+        email: {
           type: Sequelize.STRING,
-          field: 'created_by'
-        },
-        updatedBy: {
-          type: Sequelize.STRING,
-          field: 'updated_by'
-        },
-        deletedBy: {
-          type: Sequelize.STRING,
-          field: 'deleted_by'
-        },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'created_at',
-          allowNull: false
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updated_at',
-          allowNull: false
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deleted_at'
-        }
-      },
-      {
-        transaction: transaction
-      }
-    ]
-  },
-  {
-    fn: 'createTable',
-    params: [
-      'role',
-      {
-        id: {
-          type: Sequelize.INTEGER,
-          field: 'id',
-          autoIncrement: true,
-          primaryKey: true,
-          allowNull: false
-        },
-        name: {
-          type: Sequelize.STRING,
-          field: 'name',
-          allowNull: false
-        },
-        isActive: {
-          type: Sequelize.BOOLEAN,
-          field: 'is_active',
-          defaultValue: true
-        },
-        createdBy: {
-          type: Sequelize.STRING,
-          field: 'created_by'
-        },
-        updatedBy: {
-          type: Sequelize.STRING,
-          field: 'updated_by'
-        },
-        deletedBy: {
-          type: Sequelize.STRING,
-          field: 'deleted_by'
-        },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'created_at',
-          allowNull: false
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updated_at',
-          allowNull: false
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deleted_at'
-        }
-      },
-      {
-        transaction: transaction
-      }
-    ]
-  },
-  {
-    fn: 'createTable',
-    params: [
-      'role_action',
-      {
-        id: {
-          type: Sequelize.INTEGER,
-          field: 'id',
-          autoIncrement: true,
-          primaryKey: true,
+          field: 'email',
+          unique: true,
           allowNull: false
         },
         roleId: {
           type: Sequelize.INTEGER,
+          onUpdate: 'CASCADE',
+          onDelete: 'NO ACTION',
           field: 'role_id',
-          onDelete: 'CASCADE',
           references: {
             model: 'role',
             key: 'id'
           },
           allowNull: false
         },
-        actionId: {
+        fullName: {
+          type: Sequelize.STRING,
+          field: 'full_name',
+          allowNull: false
+        },
+        title: {
+          type: Sequelize.STRING,
+          field: 'title',
+          allowNull: false
+        },
+        description: {
+          type: Sequelize.TEXT,
+          field: 'description'
+        },
+        profileUrl: {
+          type: Sequelize.TEXT,
+          field: 'profile_url'
+        },
+        isActive: {
+          type: Sequelize.BOOLEAN,
+          field: 'is_active',
+          defaultValue: true
+        },
+        createdBy: {
+          type: Sequelize.STRING,
+          field: 'created_by'
+        },
+        updatedBy: {
+          type: Sequelize.STRING,
+          field: 'updated_by'
+        },
+        deletedBy: {
+          type: Sequelize.STRING,
+          field: 'deleted_by'
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: 'created_at',
+          allowNull: false
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: 'updated_at',
+          allowNull: false
+        },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deleted_at'
+        }
+      },
+      {
+        transaction: transaction
+      }
+    ]
+  },
+  {
+    fn: 'createTable',
+    params: [
+      'user_experience',
+      {
+        id: {
           type: Sequelize.INTEGER,
-          field: 'action_id',
+          field: 'id',
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false
+        },
+        userId: {
+          type: Sequelize.INTEGER,
+          onUpdate: 'CASCADE',
+          field: 'user_id',
           onDelete: 'CASCADE',
           references: {
-            model: 'action',
+            model: 'user',
             key: 'id'
           },
+          allowNull: false
+        },
+        companyName: {
+          type: Sequelize.STRING,
+          field: 'company_name',
+          allowNull: false
+        },
+        location: {
+          type: Sequelize.STRING,
+          field: 'location',
+          allowNull: false
+        },
+        title: {
+          type: Sequelize.STRING,
+          field: 'title',
+          allowNull: false
+        },
+        startDate: {
+          type: Sequelize.DATE,
+          field: 'start_date',
+          allowNull: false
+        },
+        endDate: {
+          type: Sequelize.DATE,
+          field: 'end_date',
+          allowNull: false
+        },
+        description: {
+          type: Sequelize.TEXT,
+          field: 'description'
+        },
+        isActive: {
+          type: Sequelize.BOOLEAN,
+          field: 'is_active',
+          defaultValue: true
+        },
+        createdBy: {
+          type: Sequelize.STRING,
+          field: 'created_by'
+        },
+        updatedBy: {
+          type: Sequelize.STRING,
+          field: 'updated_by'
+        },
+        deletedBy: {
+          type: Sequelize.STRING,
+          field: 'deleted_by'
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: 'created_at',
+          allowNull: false
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: 'updated_at',
+          allowNull: false
+        },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deleted_at'
+        }
+      },
+      {
+        transaction: transaction
+      }
+    ]
+  },
+  {
+    fn: 'createTable',
+    params: [
+      'user_project',
+      {
+        id: {
+          type: Sequelize.INTEGER,
+          field: 'id',
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false
+        },
+        userId: {
+          type: Sequelize.INTEGER,
+          onUpdate: 'CASCADE',
+          field: 'user_id',
+          onDelete: 'CASCADE',
+          references: {
+            model: 'user',
+            key: 'id'
+          },
+          allowNull: false
+        },
+        title: {
+          type: Sequelize.STRING,
+          field: 'title',
+          allowNull: false
+        },
+        thumbnailUrl: {
+          type: Sequelize.TEXT,
+          field: 'thumbnail_url'
+        },
+        description: {
+          type: Sequelize.TEXT,
+          field: 'description'
+        },
+        isActive: {
+          type: Sequelize.BOOLEAN,
+          field: 'is_active',
+          defaultValue: true
+        },
+        createdBy: {
+          type: Sequelize.STRING,
+          field: 'created_by'
+        },
+        updatedBy: {
+          type: Sequelize.STRING,
+          field: 'updated_by'
+        },
+        deletedBy: {
+          type: Sequelize.STRING,
+          field: 'deleted_by'
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: 'created_at',
+          allowNull: false
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: 'updated_at',
+          allowNull: false
+        },
+        deletedAt: {
+          type: Sequelize.DATE,
+          field: 'deleted_at'
+        }
+      },
+      {
+        transaction: transaction
+      }
+    ]
+  },
+  {
+    fn: 'createTable',
+    params: [
+      'user_skill',
+      {
+        id: {
+          type: Sequelize.INTEGER,
+          field: 'id',
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false
+        },
+        userId: {
+          type: Sequelize.INTEGER,
+          onUpdate: 'CASCADE',
+          field: 'user_id',
+          onDelete: 'CASCADE',
+          references: {
+            model: 'user',
+            key: 'id'
+          },
+          allowNull: false
+        },
+        skillName: {
+          type: Sequelize.STRING,
+          field: 'skill_name',
           allowNull: false
         },
         isActive: {
@@ -201,19 +342,25 @@ var migrationCommands = function(transaction) {
 var rollbackCommands = function(transaction) {
   return [{
     fn: 'dropTable',
-    params: ['action', {
+    params: ['user', {
       transaction: transaction
     }]
   },
   {
     fn: 'dropTable',
-    params: ['role', {
+    params: ['user_experience', {
       transaction: transaction
     }]
   },
   {
     fn: 'dropTable',
-    params: ['role_action', {
+    params: ['user_project', {
+      transaction: transaction
+    }]
+  },
+  {
+    fn: 'dropTable',
+    params: ['user_skill', {
       transaction: transaction
     }]
   }
