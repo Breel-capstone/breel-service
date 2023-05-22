@@ -5,11 +5,6 @@ module.exports = (sequelize, Sequelize) => {
       freelancerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'user',
-          key: 'id',
-        },
-        onDelete: 'CASCADE',
       },
       price: {
         type: Sequelize.INTEGER,

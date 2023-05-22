@@ -45,6 +45,78 @@ module.exports = class ProjectRoute {
       .post(
         '/:projectId/proposal',
         this.projectController.createProjectProposal,
+      )
+      /**
+       * @swagger
+       * /v1/project/{projectId}/mentorship:
+       *   post:
+       *     tags: [Project]
+       *     summary: Create mentorship for project
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: projectId
+       *         required: true
+       *     requestBody:
+       *       content:
+       *         application/json:
+       *           schema:
+       *             type: object
+       *             properties:
+       *               budgetPercentage:
+       *                 type: integer
+       *               restriction:
+       *                 type: string
+       *     responses:
+       *       201:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: string
+       *               example: Proposal mentorship created
+       */
+      .post(
+        '/:projectId/mentorship',
+        this.projectController.createProjectMentorship,
+      )
+      /**
+       * @swagger
+       * /v1/project/{projectId}/proposal/{proposalId}:
+       *   patch:
+       *     tags: [Project]
+       *     summary: Update proposal status
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: projectId
+       *         required: true
+       *       - in: path
+       *         name: proposalId
+       *         required: true
+       *     requestBody:
+       *       content:
+       *         application/json:
+       *           schema:
+       *             type: object
+       *             properties:
+       *               status:
+       *                 type: string
+       *                 enum: [Accepted, Rejected]
+       *               applicantId:
+       *                 type: integer
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: string
+       *               example: Update proposal status success
+       */
+      .patch(
+        '/:projectId/proposal/:proposalId',
+        this.projectController.updateProposalStatus,
       );
 
     return projectRouter;

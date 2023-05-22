@@ -27,9 +27,9 @@ module.exports = (sequelize, Sequelize) => {
       coverLetter: {
         type: Sequelize.TEXT,
       },
-      isApproved: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      status: {
+        type: Sequelize.ENUM('Pending', 'Accepted', 'Rejected'),
+        defaultValue: 'Pending',
       },
 
       // Utility columns

@@ -20,8 +20,10 @@ module.exports = class Controller {
     this.project = new ProjectController(
       log,
       helper,
+      model.Project,
       model.Proposal,
       model.User,
+      model.ProjectMentorship,
     );
     this.mentor = new MentorController(log, helper, model.Mentor, model.User);
   }

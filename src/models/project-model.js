@@ -33,6 +33,14 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      mentorId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      assigneeId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
 
       // Utility columns
       createdBy: {
@@ -61,10 +69,6 @@ module.exports = (sequelize, Sequelize) => {
     Project.hasMany(models.Proposal, {
       foreignKey: 'projectId',
       as: 'proposals',
-    });
-    Project.hasOne(models.ProjectMentorship, {
-      foreignKey: 'projectId',
-      as: 'projectMentorship',
     });
   };
 

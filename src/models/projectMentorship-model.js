@@ -5,11 +5,6 @@ module.exports = (sequelize, Sequelize) => {
       projectId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'project',
-          key: 'id',
-        },
-        onDelete: 'CASCADE',
       },
       mentorId: {
         type: Sequelize.INTEGER,
