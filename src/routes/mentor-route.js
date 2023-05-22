@@ -69,8 +69,11 @@ module.exports = class MentorRoute {
        *         content:
        *           application/json:
        *             schema:
-       *              type: object
-       *              $ref: '#/components/schemas/Mentor'
+       *              type: array
+       *              items:
+       *                oneOf:
+       *                  - $ref: '#/components/schemas/Mentor'
+       *                  - $ref: '#/components/schemas/Mentor'
        */
       .get('/', this.mentorController.getMentors);
 
