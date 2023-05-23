@@ -132,7 +132,7 @@
                 "description": {
                     "allowNull": false,
                     "field": "description",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "durationMonth": {
                     "allowNull": false,
@@ -150,6 +150,11 @@
                     },
                     "field": "status",
                     "seqType": "Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai')"
+                },
+                "skills": {
+                    "allowNull": true,
+                    "field": "skills",
+                    "seqType": "Sequelize.TEXT"
                 },
                 "mentorId": {
                     "allowNull": true,
@@ -718,5 +723,5 @@
             "indexes": []
         }
     },
-    "revision": 13
+    "revision": 15
 }

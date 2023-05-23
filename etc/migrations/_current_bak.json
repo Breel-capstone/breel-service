@@ -99,17 +99,6 @@
                 "deletedAt": {
                     "field": "deleted_at",
                     "seqType": "Sequelize.DATE"
-                },
-                "userId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "user",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "user_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -161,6 +150,11 @@
                     },
                     "field": "status",
                     "seqType": "Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai')"
+                },
+                "skills": {
+                    "allowNull": true,
+                    "field": "skills",
+                    "seqType": "Sequelize.TEXT"
                 },
                 "mentorId": {
                     "allowNull": true,
@@ -729,5 +723,5 @@
             "indexes": []
         }
     },
-    "revision": 12
+    "revision": 14
 }

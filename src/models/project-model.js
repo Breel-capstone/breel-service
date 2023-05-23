@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       durationMonth: {
@@ -30,6 +30,10 @@ module.exports = (sequelize, Sequelize) => {
       status: {
         type: Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai'),
         defaultValue: 'Mencari',
+      },
+      skills: {
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       mentorId: {
         type: Sequelize.INTEGER,
