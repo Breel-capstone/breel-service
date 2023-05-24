@@ -126,7 +126,8 @@ module.exports = class UserController {
   registerDetail = async (req, res, next) => {
     let dbTransaction;
     try {
-      const { user, userSkills, userExperiences, userProjectExperiences } = req.body;
+      const { user, userSkills, userExperiences, userProjectExperiences } =
+        req.body;
       const { user: currentUser } = req;
 
       const userInfo = await this.userModel.findOne({
@@ -198,7 +199,9 @@ module.exports = class UserController {
       );
     } catch (error) {
       if (dbTransaction) {
-        await dbTransaction.rollback();
+        await dbTransaction.rollback({
+          logging: this.log.logSqlQuery(req.context),
+        });
       }
       next(error);
     }

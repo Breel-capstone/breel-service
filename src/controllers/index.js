@@ -1,6 +1,7 @@
 const UserController = require('./user-controller');
 const ProjectController = require('./project-controller');
 const MentorController = require('./mentor-controller');
+const NotificationController = require('./notification-controller');
 
 module.exports = class Controller {
   constructor(log, config, helper, authLib, model) {
@@ -16,7 +17,7 @@ module.exports = class Controller {
       model.UserProjectExperience,
       model.UserSkill,
       model.sequelize.transaction.bind(model.sequelize),
-    ); 
+    );
     this.project = new ProjectController(
       log,
       helper,
@@ -24,8 +25,16 @@ module.exports = class Controller {
       model.User,
       model.Project,
       model.ProjectMentorship,
+      model.Notification,
+      model.sequelize.transaction.bind(model.sequelize),
     );
     this.mentor = new MentorController(log, helper, model.Mentor, model.User);
+    this.notification = new NotificationController(
+      log,
+      helper,
+      model.Notification,
+      model.User,
+    );
   }
 
   ping = async (req, res) => {
