@@ -329,4 +329,64 @@ module.exports = class ProjectController {
       next(error);
     }
   };
+
+  getProjectList = async (req, res, next) => {
+    const { status, isMentored, keyword } = req.query;
+
+    let mentorId = null;
+    if (isMentored === 'true') {
+      mentorId = {
+        [Op.ne]: null,
+      };
+    }
+
+    const getQuery = {
+      ...req.paginationQuery,
+      where: {
+        status,
+        mentorId,
+      },
+    };
+
+    if (!status) {
+      delete getQuery.where.status;
+    }
+
+    if (keyword) {
+      getQuery.where = {
+        ...getQuery.where,
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${keyword}%` } },
+          { description: { [Op.iLike]: `%${keyword}%` } },
+        ],
+      };
+    }
+
+    try {
+      const projectList = await this.projectModel.findAll({
+        ...req.paginationQuery,
+        ...getQuery,
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      const projectListCount = await this.projectModel.count({
+        ...getQuery,
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      this.helper.httpRespSuccess(
+        req,
+        res,
+        200,
+        projectList,
+        this.helper.processPagination(
+          req.paginationQuery,
+          projectList.length,
+          projectListCount,
+        ),
+      );
+    } catch (error) {
+      next(error);
+    }
+  };
 };
