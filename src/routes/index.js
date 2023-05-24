@@ -8,6 +8,7 @@ const AuthRoute = require('./auth-route');
 const UserRoute = require('./user-route');
 const ProjectRoute = require('./project-route');
 const MentorRoute = require('./mentor-route');
+const NotificationRoute = require('./notification-route');
 
 module.exports = class Route {
   constructor(config, log, routeHelper, controller, middleware) {
@@ -37,6 +38,10 @@ module.exports = class Route {
       this.config,
       this.log,
       this.controller.mentor,
+      this.middleware,
+    ).getRoutes();
+    this.notificationRoute = new NotificationRoute(
+      this.controller.notification,
       this.middleware,
     ).getRoutes();
 
@@ -89,8 +94,6 @@ module.exports = class Route {
    *    UtilityField:
    *      type: object
    *      properties:
-   *        isActive:
-   *          type: boolean
    *        createdAt:
    *          type: string
    *          format: date-time
@@ -187,6 +190,7 @@ module.exports = class Route {
     this.app.use('/v1/user', this.userRoute);
     this.app.use('/v1/project', this.projectRoute);
     this.app.use('/v1/mentor', this.mentorRoute);
+    this.app.use('/v1/notification', this.notificationRoute);
 
     this.app.use(this.middleware.errorHandler);
     this.app.use(this.middleware.notFoundHandler);

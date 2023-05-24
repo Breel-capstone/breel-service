@@ -132,7 +132,7 @@
                 "description": {
                     "allowNull": false,
                     "field": "description",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "durationMonth": {
                     "allowNull": false,
@@ -723,5 +723,5 @@
             "indexes": []
         }
     },
-    "revision": 14
+    "revision": 15
 }
