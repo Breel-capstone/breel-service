@@ -97,14 +97,16 @@ module.exports = class ProjectController {
       return;
     }
 
+    let dbTransaction;
+
     try {
       const user = await this.userModel.findOne({
         where: { uid },
-        attributes: ['id', 'roleId', 'fullName'],
+        attributes: ['id', 'role_id', 'full_name'],
         logging: this.log.logSqlQuery(req.context),
       });
 
-      if (user.roleId !== 2) {
+      if (!user || user.roleId !== 2) {
         this.helper.httpRespError(
           req,
           res,
