@@ -31,7 +31,7 @@ module.exports = class RouteHelper {
     limit = parseInt(limit) || 10;
     offset = parseInt(offset) || 0;
     const totalPage = Math.ceil(totalElement / limit);
-    
+
     return {
       currentElement,
       totalElement,
@@ -44,21 +44,24 @@ module.exports = class RouteHelper {
     const now = new Date();
     const requestTimeElapsed =
       now.getTime() - req.context.requestStartTime.getTime();
-    res.send({
-      message: {
-        title: 'Error',
-        body: message,
+    res.send(
+      {
+        message: {
+          title: 'Error',
+          body: message,
+        },
+        meta: {
+          path: this.config.Meta.Host + req.url,
+          statusCode: code,
+          timestamp: now,
+          requestId: req.context.requestId,
+          timeElapsed: `${requestTimeElapsed}ms`,
+        },
+        data: null,
+        pagination: null,
       },
-      meta: {
-        path: this.config.Meta.Host + req.url,
-        statusCode: code,
-        timestamp: now,
-        requestId: req.context.requestId,
-        timeElapsed: `${requestTimeElapsed}ms`,
-      },
-      data: null,
-      pagination: null,
-    });
+      code,
+    );
     req.context.responseCode = code;
   };
 };

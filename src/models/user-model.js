@@ -82,6 +82,10 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'mentorId',
       as: 'projectMentorships',
     });
+    User.hasOne(models.DailyMentoring, {
+      foreignKey: 'freelancerId',
+      as: 'dailyMentoring',
+    });
   };
   return User;
 };

@@ -103,6 +103,85 @@
             },
             "indexes": []
         },
+        "notification": {
+            "tableName": "notification",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "userId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "user_id",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "title": {
+                    "allowNull": false,
+                    "field": "title",
+                    "seqType": "Sequelize.STRING"
+                },
+                "message": {
+                    "allowNull": false,
+                    "field": "message",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "thumbnailUrl": {
+                    "defaultValue": {
+                        "value": "https://via.placeholder.com/150"
+                    },
+                    "field": "thumbnail_url",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "source": {
+                    "allowNull": false,
+                    "field": "source",
+                    "seqType": "Sequelize.STRING"
+                },
+                "isRead": {
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_read",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "project": {
             "tableName": "project",
             "schema": {
@@ -723,5 +802,5 @@
             "indexes": []
         }
     },
-    "revision": 15
+    "revision": 16
 }

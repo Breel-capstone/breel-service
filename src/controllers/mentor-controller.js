@@ -1,11 +1,13 @@
 const ErrorLib = require('../../sdk/errorlib');
+const { Op } = require('sequelize');
 
 module.exports = class MentorController {
-  constructor(log, helper, mentorModel, userModel) {
+  constructor(log, helper, dailyMentoringModel, userModel, userSkillModel) {
     this.log = log;
     this.helper = helper;
     this.userModel = userModel;
-    this.mentorModel = mentorModel;
+    this.dailyMentoringModel = dailyMentoringModel;
+    this.userSkillModel = userSkillModel;
   }
 
   createMentor = async (req, res, next) => {
@@ -15,13 +17,15 @@ module.exports = class MentorController {
     try {
       const user = await this.userModel.findOne({
         where: { uid },
-        attributes: ['id'],
+        attributes: ['id', 'role_id'],
         logging: this.log.logSqlQuery(req.context),
       });
 
-      // TODO: only user with role senior freelancer can create mentor
+      if (user.roleId !== 2) {
+        throw new ErrorLib('Only senior freelancer can create mentor', 403);
+      }
 
-      await this.mentorModel.create(
+      await this.dailyMentoringModel.create(
         {
           freelancerId: user.id,
           price,
@@ -41,16 +45,66 @@ module.exports = class MentorController {
   };
 
   getMentors = async (req, res, next) => {
+    const { keyword } = req.query;
+    let whereClause = {
+      roleId: 2,
+    };
+
+    if (keyword) {
+      whereClause = {
+        roleId: 2,
+        fullName: {
+          [Op.like]: `%${keyword}%`,
+        },
+      };
+    }
+
+    const dailyMentoringRelation = {
+      model: this.dailyMentoringModel,
+      as: 'dailyMentoring',
+      attributes: ['price'],
+      required: true,
+    };
+
+    const mentorSkillRelation = {
+      model: this.userSkillModel,
+      as: 'userSkills',
+      attributes: ['skill_name'],
+    };
+
     try {
-      let mentorList;
-      mentorList = await this.mentorModel.findAll();
+      const mentorList = await this.userModel.findAll({
+        ...req.paginationQuery,
+        where: whereClause,
+        include: [dailyMentoringRelation, mentorSkillRelation],
+        logging: this.log.logSqlQuery(req.context),
+      });
 
-      // User registered in firebase but not in database, ignore
-      if (!mentorList) {
-        throw new ErrorLib('No Mentors existed', 404);
-      }
+      const mentorListCount = await this.userModel.count({
+        where: whereClause,
+        include: [dailyMentoringRelation, mentorSkillRelation],
+        logging: this.log.logSqlQuery(req.context),
+      });
 
-      this.helper.httpRespSuccess(req, res, 200, mentorList, null);
+      const mentorListData = mentorList.map((mentor) => ({
+        ...mentor.dataValues,
+        price: mentor.dailyMentoring.price,
+        skills: mentor.userSkills.map((skill) => skill.skillName),
+        dailyMentoring: undefined,
+        userSkills: undefined,
+      }));
+
+      this.helper.httpRespSuccess(
+        req,
+        res,
+        200,
+        mentorListData,
+        this.helper.processPagination(
+          req.paginationQuery,
+          mentorList.length,
+          mentorListCount,
+        ),
+      );
     } catch (error) {
       next(error);
     }

@@ -1,12 +1,12 @@
 const mentorRouter = require('express').Router();
 
-
 module.exports = class MentorRoute {
   constructor(config, log, mentorController, middleware) {
     this.config = config;
     this.log = log;
     this.mentorController = mentorController;
     this.authMiddleware = middleware.auth;
+    this.paginationMiddleware = middleware.paginate;
   }
   /**
    * @swagger
@@ -24,7 +24,6 @@ module.exports = class MentorRoute {
    *        durationMonth:
    *          type: integer
    */
-
 
   getRoutes = () => {
     mentorRouter.use(this.authMiddleware.verifyToken);
@@ -61,21 +60,43 @@ module.exports = class MentorRoute {
        * /v1/mentor:
        *   get:
        *     tags: [Mentor]
-       *     summary: list all mentors
+       *     summary: Get Daily Mentor list
        *     security:
        *       - bearerAuth: []
+       *     parameters:
+       *       - $ref: '#/components/parameters/PageQuery'
+       *       - $ref: '#/components/parameters/LimitQuery'
+       *       - $ref: '#/components/parameters/DisableLimitQuery'
+       *       - in: query
+       *         name: keyword
+       *         type: string
+       *         description: Mentor search keyword
        *     responses:
        *       200:
        *         content:
        *           application/json:
        *             schema:
-       *              type: array
-       *              items:
-       *                oneOf:
-       *                  - $ref: '#/components/schemas/Mentor'
-       *                  - $ref: '#/components/schemas/Mentor'
+       *               type: object
+       *               properties:
+       *                 data:
+       *                   type: array
+       *                   items:
+       *                     type: object
+       *                     allOf:
+       *                       - $ref: '#/components/schemas/User'
+       *                       - $ref: '#/components/schemas/UtilityField'
+       *                     properties:
+       *                       price:
+       *                         type: integer
+       *                       skills:
+       *                         type: array
+       *                         items:
+       *                           type: string
+       *                 pagination:
+       *                   type: object
+       *                   $ref: '#/components/schemas/Pagination'
        */
-      .get('/', this.mentorController.getMentors);
+      .get('/', this.paginationMiddleware, this.mentorController.getMentors);
 
     return mentorRouter;
   };
