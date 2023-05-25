@@ -33,7 +33,7 @@ module.exports = class MentorRoute {
        * /v1/mentor:
        *   post:
        *     tags: [Mentor]
-       *     summary: Create mentor
+       *     summary: Create daily mentor
        *     security:
        *       - bearerAuth: []
        *     requestBody:
