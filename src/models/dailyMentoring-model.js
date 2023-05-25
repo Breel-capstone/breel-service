@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const Mentor = sequelize.define(
-    'Mentor',
+  const DailyMentoring = sequelize.define(
+    'DailyMentoring',
     {
       freelancerId: {
         type: Sequelize.INTEGER,
@@ -33,11 +33,18 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
       paranoid: true,
-      tableName: 'mentor',
+      tableName: 'daily_mentoring',
       underscored: true,
       timestamps: true,
     },
   );
 
-  return Mentor;
+  DailyMentoring.associate = (models) => {
+    DailyMentoring.belongsTo(models.User, {
+      foreignKey: 'freelancerId',
+      as: 'freelancer',
+    });
+  };
+
+  return DailyMentoring;
 };

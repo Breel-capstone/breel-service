@@ -217,12 +217,18 @@ module.exports = class ProjectRoute {
        *         content:
        *           application/json:
        *             schema:
-       *               type: array
-       *               items:
-       *                 type: object
-       *                 allOf:
-       *                   - $ref: '#/components/schemas/Project'
-       *                   - $ref: '#/components/schemas/UtilityField'
+       *               type: object
+       *               properties:
+       *                 data:
+       *                   type: array
+       *                   items:
+       *                     type: object
+       *                     allOf:
+       *                       - $ref: '#/components/schemas/Project'
+       *                       - $ref: '#/components/schemas/UtilityField'
+       *                 pagination:
+       *                   type: object
+       *                   $ref: '#/components/schemas/Pagination'
        */
       .get(
         '/',
