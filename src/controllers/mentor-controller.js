@@ -136,6 +136,10 @@ module.exports = class MentorController {
         logging: this.log.logSqlQuery(req.context),
       });
 
+      if (!user) {
+        throw new ErrorLib('You are not a mentor', 403);
+      }
+
       const dailyMentoringId = user.dailyMentoring.id;
 
       const dmApplicantList = await this.dailyMentoringApplicantModel.findAll({
@@ -160,32 +164,30 @@ module.exports = class MentorController {
         logging: this.log.logSqlQuery(req.context),
       });
 
-      const acceptedApplicant = [];
-      const pendingApplicant = [];
+      const acceptedApplicants = [];
+      const pendingApplicants = [];
 
       dmApplicantList.forEach((dmApplicant) => {
         if (dmApplicant.status === 'Accepted') {
-          acceptedApplicant.push({
+          acceptedApplicants.push({
             ...dmApplicant.applicant.dataValues,
             skills: dmApplicant.applicant.userSkills.map(
               (skill) => skill.skillName,
             ),
-            status: dmApplicant.status,
           });
         } else if (dmApplicant.status === 'Pending') {
-          pendingApplicant.push({
+          pendingApplicants.push({
             ...dmApplicant.applicant.dataValues,
             skills: dmApplicant.applicant.userSkills.map(
               (skill) => skill.skillName,
             ),
-            status: dmApplicant.status,
           });
         }
       });
 
       const data = {
-        acceptedApplicant,
-        pendingApplicant,
+        acceptedApplicants,
+        pendingApplicants,
       };
 
       this.helper.httpRespSuccess(req, res, 200, data, null);

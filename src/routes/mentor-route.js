@@ -96,7 +96,48 @@ module.exports = class MentorRoute {
        *                   type: object
        *                   $ref: '#/components/schemas/Pagination'
        */
-      .get('/', this.paginationMiddleware, this.mentorController.getMentors);
+      .get('/', this.paginationMiddleware, this.mentorController.getMentors)
+      /**
+       * @swagger
+       * /v1/mentor/applicant:
+       *   get:
+       *     tags: [Mentor]
+       *     summary: Get Daily Mentor applicant list
+       *     security:
+       *       - bearerAuth: []
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                 acceptedApplicants:
+       *                   type: array
+       *                   items:
+       *                     type: object
+       *                     allOf:
+       *                       - $ref: '#/components/schemas/User'
+       *                       - $ref: '#/components/schemas/UtilityField'
+       *                     properties:
+       *                       skills:
+       *                         type: array
+       *                         items:
+       *                           type: string
+       *                 pendingApplicants:
+       *                   type: array
+       *                   items:
+       *                     type: object
+       *                     allOf:
+       *                       - $ref: '#/components/schemas/User'
+       *                       - $ref: '#/components/schemas/UtilityField'
+       *                     properties:
+       *                       skills:
+       *                         type: array
+       *                         items:
+       *                           type: string
+       */
+      .get('/applicant', this.mentorController.getMentoringApplicants);
 
     return mentorRouter;
   };
