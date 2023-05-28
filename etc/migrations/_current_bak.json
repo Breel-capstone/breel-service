@@ -44,8 +44,8 @@
             },
             "indexes": []
         },
-        "mentor": {
-            "tableName": "mentor",
+        "daily_mentoring": {
+            "tableName": "daily_mentoring",
             "schema": {
                 "id": {
                     "allowNull": false,
@@ -62,6 +62,7 @@
                     },
                     "onDelete": "CASCADE",
                     "field": "freelancer_id",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "price": {
@@ -802,5 +803,5 @@
             "indexes": []
         }
     },
-    "revision": 16
+    "revision": 17
 }

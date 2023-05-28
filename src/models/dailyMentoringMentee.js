@@ -1,8 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
-  const DailyMentoring = sequelize.define(
-    'DailyMentoring',
+  const DailyMentoringApplicant = sequelize.define(
+    'DailyMentoringApplicant',
     {
-      freelancerId: {
+      applicantId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -11,13 +11,17 @@ module.exports = (sequelize, Sequelize) => {
         },
         onDelete: 'CASCADE',
       },
-      price: {
+      dailyMentoringId: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      durationMonth: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+      status: {
+        type: Sequelize.ENUM('Pending', 'Approved', 'Rejected'),
+        defaultValue: 'Pending',
+      },
+      expiredAt: {
+        type: Sequelize.DATE,
+        allowNull: true,
       },
 
       // Utility columns
@@ -33,22 +37,22 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
       paranoid: true,
-      tableName: 'daily_mentoring',
+      tableName: 'daily_mentoring_applicant',
       underscored: true,
       timestamps: true,
     },
   );
 
-  DailyMentoring.associate = (models) => {
-    DailyMentoring.belongsTo(models.User, {
-      foreignKey: 'freelancerId',
-      as: 'freelancer',
+  DailyMentoringApplicant.associate = (models) => {
+    DailyMentoringApplicant.belongsTo(models.User, {
+      foreignKey: 'applicantId',
+      as: 'applicant',
     });
-    DailyMentoring.hasMany(models.DailyMentoringApplicant, {
+    DailyMentoringApplicant.belongsTo(models.DailyMentoring, {
       foreignKey: 'dailyMentoringId',
-      as: 'applicants',
+      as: 'dailyMentoring',
     });
   };
 
-  return DailyMentoring;
+  return DailyMentoringApplicant;
 };
