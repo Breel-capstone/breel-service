@@ -86,6 +86,10 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'freelancerId',
       as: 'dailyMentoring',
     });
+    User.hasMany(models.DailyMentoringApplicant, {
+      foreignKey: 'applicantId',
+      as: 'dailyMentoringApplicants',
+    });
   };
   return User;
 };

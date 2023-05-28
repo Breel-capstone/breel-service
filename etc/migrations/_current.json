@@ -104,6 +104,79 @@
             },
             "indexes": []
         },
+        "daily_mentoring_applicant": {
+            "tableName": "daily_mentoring_applicant",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "applicantId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "applicant_id",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "dailyMentoringId": {
+                    "allowNull": false,
+                    "field": "daily_mentoring_id",
+                    "references": {
+                        "model": "daily_mentoring",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "status": {
+                    "defaultValue": {
+                        "value": "Pending"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.ENUM('Pending', 'Approved', 'Rejected')"
+                },
+                "expiredAt": {
+                    "allowNull": true,
+                    "field": "expired_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "notification": {
             "tableName": "notification",
             "schema": {
@@ -803,5 +876,5 @@
             "indexes": []
         }
     },
-    "revision": 17
+    "revision": 18
 }

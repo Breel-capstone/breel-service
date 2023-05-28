@@ -2,12 +2,20 @@ const ErrorLib = require('../../sdk/errorlib');
 const { Op } = require('sequelize');
 
 module.exports = class MentorController {
-  constructor(log, helper, dailyMentoringModel, userModel, userSkillModel) {
+  constructor(
+    log,
+    helper,
+    dailyMentoringModel,
+    userModel,
+    userSkillModel,
+    dailyMentoringApplicantModel,
+  ) {
     this.log = log;
     this.helper = helper;
     this.userModel = userModel;
     this.dailyMentoringModel = dailyMentoringModel;
     this.userSkillModel = userSkillModel;
+    this.dailyMentoringApplicantModel = dailyMentoringApplicantModel;
   }
 
   createMentor = async (req, res, next) => {
@@ -105,6 +113,84 @@ module.exports = class MentorController {
           mentorListCount,
         ),
       );
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getMentoringApplicants = async (req, res, next) => {
+    const { uid } = req.user;
+
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id'],
+        include: [
+          {
+            model: this.dailyMentoringModel,
+            as: 'dailyMentoring',
+            required: true,
+            attributes: ['id'],
+          },
+        ],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (!user) {
+        throw new ErrorLib('You are not a mentor', 403);
+      }
+
+      const dailyMentoringId = user.dailyMentoring.id;
+
+      const dmApplicantList = await this.dailyMentoringApplicantModel.findAll({
+        where: {
+          dailyMentoringId,
+          status: { [Op.in]: ['Accepted', 'Pending'] },
+        },
+        include: [
+          {
+            model: this.userModel,
+            as: 'applicant',
+            required: true,
+            include: [
+              {
+                model: this.userSkillModel,
+                as: 'userSkills',
+                attributes: ['skill_name'],
+              },
+            ],
+          },
+        ],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      const acceptedApplicants = [];
+      const pendingApplicants = [];
+
+      dmApplicantList.forEach((dmApplicant) => {
+        if (dmApplicant.status === 'Accepted') {
+          acceptedApplicants.push({
+            ...dmApplicant.applicant.dataValues,
+            skills: dmApplicant.applicant.userSkills.map(
+              (skill) => skill.skillName,
+            ),
+          });
+        } else if (dmApplicant.status === 'Pending') {
+          pendingApplicants.push({
+            ...dmApplicant.applicant.dataValues,
+            skills: dmApplicant.applicant.userSkills.map(
+              (skill) => skill.skillName,
+            ),
+          });
+        }
+      });
+
+      const data = {
+        acceptedApplicants,
+        pendingApplicants,
+      };
+
+      this.helper.httpRespSuccess(req, res, 200, data, null);
     } catch (error) {
       next(error);
     }
