@@ -28,7 +28,14 @@ module.exports = class Controller {
       model.Notification,
       model.sequelize.transaction.bind(model.sequelize),
     );
-    this.mentor = new MentorController(log, helper, model.DailyMentoring, model.User, model.UserSkill);
+    this.mentor = new MentorController(
+      log,
+      helper,
+      model.DailyMentoring,
+      model.User,
+      model.UserSkill,
+      model.DailyMentoringApplicant,
+    );
     this.notification = new NotificationController(
       log,
       helper,
