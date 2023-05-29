@@ -9,6 +9,7 @@ module.exports = class MentorController {
     userModel,
     userSkillModel,
     dailyMentoringApplicantModel,
+    notificationModel
   ) {
     this.log = log;
     this.helper = helper;
@@ -16,6 +17,7 @@ module.exports = class MentorController {
     this.dailyMentoringModel = dailyMentoringModel;
     this.userSkillModel = userSkillModel;
     this.dailyMentoringApplicantModel = dailyMentoringApplicantModel;
+    this.notificationModel = notificationModel;
   }
 
   createMentor = async (req, res, next) => {
@@ -25,11 +27,11 @@ module.exports = class MentorController {
     try {
       const user = await this.userModel.findOne({
         where: { uid },
-        attributes: ['id', 'role_id'],
+        attributes: ['id', 'roleId'],
         logging: this.log.logSqlQuery(req.context),
       });
 
-      if (user.roleId !== 2) {
+      if (user.roleId!== 2) {
         throw new ErrorLib('Only senior freelancer can create mentor', 403);
       }
 
@@ -145,7 +147,7 @@ module.exports = class MentorController {
       const dmApplicantList = await this.dailyMentoringApplicantModel.findAll({
         where: {
           dailyMentoringId,
-          status: { [Op.in]: ['Accepted', 'Pending'] },
+          status: { [Op.in]: ['Approved', 'Pending'] },
         },
         include: [
           {
@@ -168,7 +170,7 @@ module.exports = class MentorController {
       const pendingApplicants = [];
 
       dmApplicantList.forEach((dmApplicant) => {
-        if (dmApplicant.status === 'Accepted') {
+        if (dmApplicant.status === 'Approved') {
           acceptedApplicants.push({
             ...dmApplicant.applicant.dataValues,
             skills: dmApplicant.applicant.userSkills.map(
@@ -194,5 +196,80 @@ module.exports = class MentorController {
     } catch (error) {
       next(error);
     }
+  };
+
+  acceptMentee = async (req, res, next) => {
+    const { uid } = req.user;
+    const { status, applicantId } = req.body;
+
+
+    const dailyMentoringRelation = {
+      model: this.dailyMentoringModel,
+      as: 'dailyMentoring',
+      required: true,
+    };
+
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id', 'roleId', 'fullName'],
+        include: [dailyMentoringRelation],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (user.roleId !== 2) {
+        throw new ErrorLib('Only senior freelancer allowed', 403);
+      }
+
+      await this.dailyMentoringApplicantModel.update(
+        { status, updatedBy: `${user.id}` },
+        {
+          where: {
+            id : user.dailyMentoring.id,
+            applicantId,
+          },
+          logging: this.log.logSqlQuery(req.context),
+        },
+      );
+      await this.createMentorNotification(
+        req,
+        status,
+        user,
+        user.fullName,
+        applicantId
+      );
+
+      this.helper.httpRespSuccess(req, res, 200, `Mentee ${status}`, null);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  createMentorNotification = async (
+    req,
+    status,
+    user,
+    mentorName,
+    applicantId
+  ) => {
+    await this.notificationModel.create(
+      {
+        userId: applicantId,
+        title:
+          status === 'Approved'
+            ? `Selamat! Anda diterima sebagai Mentee-nya ${mentorName}`
+            : `Mohon maaf! Anda telah ditolak sebagai Mentee-nya ${mentorName}`,
+        message:
+          status === 'Approved'
+            ? `Halo! ${mentorName} telah menerima anda sebagai Daily Mentee! Kontak Mentee anda untuk informasi selanjutnya`
+            : `Halo! Setelah direview, ${mentorName} memutuskan untuk tidak memilih anda menjadi Daily Mentee, tetap semangat! masih banyak ikan di lautan!`,
+        source: 'PATCH - v1/mentor/accept-applicant',
+        createdBy: `${user.id}`,
+        updatedBy: `${user.id}`,
+      },
+      {
+        logging: this.log.logSqlQuery(req.context)
+      },
+    );
   };
 };

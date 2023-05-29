@@ -137,7 +137,64 @@ module.exports = class MentorRoute {
        *                         items:
        *                           type: string
        */
-      .get('/applicant', this.mentorController.getMentoringApplicants);
+      .get('/applicant', this.mentorController.getMentoringApplicants)
+
+      /**
+       * @swagger
+       * /v1/mentor/accept-applicant:
+       *   patch:
+       *     tags: [Mentor]
+       *     summary: Accept a Mentee into Daily Mentoring
+       *     security:
+       *       - bearerAuth: []
+       *     requestBody:
+       *       content:
+       *         application/json:
+       *           schema:
+       *             type: object
+       *             properties:
+       *               status:
+       *                 type: string
+       *                 enum: [Approved, Rejected]
+       *               applicantId:
+       *                 type: integer
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                message: 
+       *                  type: object
+       *                  properties: 
+       *                    title: 
+       *                      type: string
+       *                    body: 
+       *                      type: string
+       *                meta: 
+       *                  type: object
+       *                  properties: 
+       *                    path: 
+       *                      type: string
+       *                    statusCode: 
+       *                      type: integer
+       *                      format: int32
+       *                    timestamp: 
+       *                      type: string
+       *                      format: date-time
+       *                    requestId: 
+       *                      type: string
+       *                    timeElapsed: 
+       *                      type: string
+       *                data: 
+       *                  type: string
+       *                  format: nullable
+       *                pagination: 
+       *                  type: string
+       *                  format: nullable
+       */
+      .patch('/accept-applicant', this.mentorController.acceptMentee);
 
     return mentorRouter;
   };
