@@ -14,12 +14,26 @@ module.exports = {
      */
     await queryInterface.bulkInsert('daily_mentoring', [
       {
-        freelancer_id: 2,
+        freelancer_id: 4,
         price: 500_000,
         duration_month: 1,
         created_at: new Date(),
         updated_at: new Date(),
-      }
+      },
+      {
+        freelancer_id: 5,
+        price: 1_000_000,
+        duration_month: 3,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        freelancer_id: 6,
+        price: 750_000,
+        duration_month: 2,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]);
   },
 
