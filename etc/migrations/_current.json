@@ -361,6 +361,12 @@
                 "projectId": {
                     "allowNull": false,
                     "field": "project_id",
+                    "references": {
+                        "model": "project",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "mentorId": {
@@ -369,8 +375,8 @@
                         "model": "user",
                         "key": "id"
                     },
+                    "onDelete": "CASCADE",
                     "field": "mentor_id",
-                    "onDelete": "NO ACTION",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
@@ -876,5 +882,5 @@
             "indexes": []
         }
     },
-    "revision": 18
+    "revision": 19
 }

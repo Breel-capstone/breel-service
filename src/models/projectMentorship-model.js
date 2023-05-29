@@ -13,6 +13,7 @@ module.exports = (sequelize, Sequelize) => {
           model: 'user',
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       budgetPercentage: {
         type: Sequelize.FLOAT,
