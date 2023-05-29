@@ -72,6 +72,10 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'projectId',
       as: 'proposals',
     });
+    Project.hasOne(models.ProjectMentorship, {
+      foreignKey: 'projectId',
+      as: 'projectMentorship',
+    });
   };
   return Project;
 };

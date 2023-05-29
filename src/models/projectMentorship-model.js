@@ -46,6 +46,10 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'mentorId',
       as: 'mentor',
     });
+    ProjectMentorship.belongsTo(models.Project, {
+      foreignKey: 'projectId',
+      as: 'project',
+    });
   };
 
   return ProjectMentorship;
