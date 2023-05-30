@@ -30,7 +30,9 @@ module.exports = class ProjectRoute {
    *         status:
    *           type: string
    *         skills:
-   *           type: string
+   *           type: array
+   *           items:
+   *             type: string
    *         mentorId:
    *           type: integer
    *         assigneeId:

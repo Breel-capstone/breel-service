@@ -374,6 +374,10 @@ module.exports = class ProjectController {
         logging: this.log.logSqlQuery(req.context),
       });
 
+      projectList.forEach((project) => {
+        project.dataValues.skills = project.dataValues.skills.split(',');
+      });
+
       this.helper.httpRespSuccess(
         req,
         res,
