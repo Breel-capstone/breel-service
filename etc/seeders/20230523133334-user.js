@@ -20,7 +20,7 @@ module.exports = {
         full_name: 'Test Freelancer 1',
         title: 'Backend Developer',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.freelancer.1',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.freelancer.1',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -32,7 +32,7 @@ module.exports = {
         full_name: 'Test Freelancer 2',
         title: 'Frontend Developer',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.freelancer.2',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.freelancer.2',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -44,7 +44,7 @@ module.exports = {
         full_name: 'Test Freelancer 3',
         title: 'UI/UX Designer',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.freelancer.3',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.freelancer.3',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -56,7 +56,7 @@ module.exports = {
         full_name: 'Test Mentor 1',
         title: 'Backend Developer',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.mentor.1',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.mentor.1',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -68,7 +68,7 @@ module.exports = {
         full_name: 'Test Mentor 2',
         title: 'Frontend Developer',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.mentor.2',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.mentor.2',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -80,7 +80,7 @@ module.exports = {
         full_name: 'Test Mentor 3',
         title: 'UI/UX Designer',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.mentor.3',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.mentor.3',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -91,7 +91,7 @@ module.exports = {
         role_id: 3,
         full_name: 'Test Client 1',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.client.1',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.client.1',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -102,7 +102,7 @@ module.exports = {
         role_id: 3,
         full_name: 'Test Client 2',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.client.2',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.client.2',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
@@ -113,7 +113,7 @@ module.exports = {
         role_id: 3,
         full_name: 'Test Client 3',
         profile_url:
-          'https://api.dicebear.com/6.x/open-peeps/svg?clothingColor=17231d&skinColor=fdf2f5&seed=test.client.3',
+          'https://api.dicebear.com/6.x/open-peeps/png?clothingColor=17231d&skinColor=fdf2f5&seed=test.client.3',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         created_at: new Date(),
         updated_at: new Date(),
