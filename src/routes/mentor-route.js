@@ -141,10 +141,10 @@ module.exports = class MentorRoute {
 
       /**
        * @swagger
-       * /v1/mentor/accept-applicant:
+       * /v1/mentor/update-applicant-status:
        *   patch:
        *     tags: [Mentor]
-       *     summary: Accept a Mentee into Daily Mentoring
+       *     summary: Approve or Reject a Mentee into Daily Mentoring
        *     security:
        *       - bearerAuth: []
        *     requestBody:
@@ -205,7 +205,7 @@ module.exports = class MentorRoute {
        *                  type: string
        *                  format: nullable
        */
-      .patch('/accept-applicant', this.mentorController.acceptMentee);
+      .patch('/update-applicant-status', this.mentorController.acceptMentee);
 
     return mentorRouter;
   };
