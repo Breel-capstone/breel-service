@@ -2,6 +2,7 @@ const UserController = require('./user-controller');
 const ProjectController = require('./project-controller');
 const MentorController = require('./mentor-controller');
 const NotificationController = require('./notification-controller');
+const ProposalController = require('./proposal-controller');
 
 module.exports = class Controller {
   constructor(log, config, helper, authLib, model) {
@@ -41,6 +42,13 @@ module.exports = class Controller {
       helper,
       model.Notification,
       model.User,
+    );
+    this.proposal = new ProposalController(
+      log,
+      helper,
+      model.Proposal,
+      model.User,
+      model.Project
     );
   }
 

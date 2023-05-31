@@ -13,20 +13,22 @@ module.exports = class ProposalController {
     this.projectModel = projectModel;
   }
 
-  proposalById = async (req, res, next) => {
+  getProposalById = async (req, res, next) => {
+    const { id } = req.params;
+
     try {
-      let userInfo;
-      userInfo = await this.userModel.findOne({
+      const proposalDetail = await this.proposalModel.findOne({
+        where: {id},
         logging: this.log.logSqlQuery(req.context),
-        where: { id: req.params.userId },
       });
 
-      // User registered in firebase but not in database, ignore
-      if (!userInfo) {
-        throw new ErrorLib(`user with id ${req.param.userId} not found`, 500);
-      }
-
-      this.helper.httpRespSuccess(req, res, 200, userInfo, null);
+      this.helper.httpRespSuccess(
+        req,
+        res,
+        200,
+        proposalDetail,
+      );    
+    
     } catch (error) {
       next(error);
     }
