@@ -51,18 +51,39 @@ module.exports = class ProjectRoute {
        *         name: proposalId
        *         required: true
        *     responses:
-       *       201:
+       *       200:
        *         content:
        *           application/json:
        *             schema:
        *               type: object
        *               properties:
-       *               data:
-       *                 type: object
-       *                 
-       *                 allOf:
-       *                   - $ref: '#/components/schemas/Project'
-       *                   - $ref: '#/components/schemas/UtilityField'
+       *                 message: 
+       *                   type: object
+       *                   properties: 
+       *                     title: 
+       *                       type: string
+       *                     body: 
+       *                       type: string
+       *                 meta: 
+       *                   type: object
+       *                   properties: 
+       *                     path: 
+       *                       type: string
+       *                     statusCode: 
+       *                       type: integer
+       *                       format: int32
+       *                     timestamp: 
+       *                       type: string
+       *                       format: date-time
+       *                     requestId: 
+       *                       type: string
+       *                     timeElapsed: 
+       *                       type: string
+       *                 data:
+       *                   type: object
+       *                   allOf:
+       *                     - $ref: '#/components/schemas/Proposal'
+       *                     - $ref: '#/components/schemas/UtilityField'
        */
       .get('/:id', this.proposalController.getProposalById);
 
