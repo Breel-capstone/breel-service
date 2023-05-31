@@ -158,6 +158,17 @@ module.exports = class MentorRoute {
        *                 enum: [Approved, Rejected]
        *               applicantId:
        *                 type: integer
+       *           examples:
+       *             approved:
+       *               summary: Example of Approved
+       *               value:
+       *                 status: Approved
+       *                 applicantId: 1
+       *             rejected:
+       *               summary: An example of Reject
+       *               value:
+       *                 status: Rejected
+       *                 applicantId: 1
        *     responses:
        *       200:
        *         content:
