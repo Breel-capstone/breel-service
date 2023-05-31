@@ -9,6 +9,7 @@ const UserRoute = require('./user-route');
 const ProjectRoute = require('./project-route');
 const MentorRoute = require('./mentor-route');
 const NotificationRoute = require('./notification-route');
+const ProposalRoute = require('./proposal-route');
 
 module.exports = class Route {
   constructor(config, log, routeHelper, controller, middleware) {
@@ -42,6 +43,11 @@ module.exports = class Route {
     ).getRoutes();
     this.notificationRoute = new NotificationRoute(
       this.controller.notification,
+      this.middleware,
+    ).getRoutes();
+    this.proposalRoute = new ProposalRoute (
+      this.log,
+      this.controller.proposal,
       this.middleware,
     ).getRoutes();
 
@@ -191,6 +197,7 @@ module.exports = class Route {
     this.app.use('/v1/project', this.projectRoute);
     this.app.use('/v1/mentor', this.mentorRoute);
     this.app.use('/v1/notification', this.notificationRoute);
+    this.app.use('/v1/proposal', this.proposalRoute);
 
     this.app.use(this.middleware.errorHandler);
     this.app.use(this.middleware.notFoundHandler);
