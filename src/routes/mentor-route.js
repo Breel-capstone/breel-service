@@ -137,7 +137,75 @@ module.exports = class MentorRoute {
        *                         items:
        *                           type: string
        */
-      .get('/applicant', this.mentorController.getMentoringApplicants);
+      .get('/applicant', this.mentorController.getMentoringApplicants)
+
+      /**
+       * @swagger
+       * /v1/mentor/applicant/{applicantId}:
+       *   patch:
+       *     tags: [Mentor]
+       *     summary: update Daily Mentee status
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: applicantId  
+       *         required: true
+       *     requestBody:
+       *       content:
+       *         application/json:
+       *           schema:
+       *             type: object
+       *             properties:
+       *               status:
+       *                 type: string
+       *                 enum: [Approved, Rejected]
+       *           examples:
+       *             approved:
+       *               summary: Example of Approved
+       *               value:
+       *                 status: Approved
+       *             rejected:
+       *               summary: An example of Reject
+       *               value:
+       *                 status: Rejected
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                message: 
+       *                  type: object
+       *                  properties: 
+       *                    title: 
+       *                      type: string
+       *                    body: 
+       *                      type: string
+       *                meta: 
+       *                  type: object
+       *                  properties: 
+       *                    path: 
+       *                      type: string
+       *                    statusCode: 
+       *                      type: integer
+       *                      format: int32
+       *                    timestamp: 
+       *                      type: string
+       *                      format: date-time
+       *                    requestId: 
+       *                      type: string
+       *                    timeElapsed: 
+       *                      type: string
+       *                data: 
+       *                  type: string
+       *                  format: nullable
+       *                pagination: 
+       *                  type: string
+       *                  format: nullable
+       */
+      .patch('/applicant/:applicantId', this.mentorController.acceptMentee);
 
     return mentorRouter;
   };

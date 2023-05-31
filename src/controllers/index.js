@@ -35,6 +35,7 @@ module.exports = class Controller {
       model.User,
       model.UserSkill,
       model.DailyMentoringApplicant,
+      model.Notification
     );
     this.notification = new NotificationController(
       log,
