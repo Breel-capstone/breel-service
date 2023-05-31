@@ -226,7 +226,7 @@ module.exports = class MentorController {
         { status, updatedBy: `${user.id}` },
         {
           where: {
-            id : user.dailyMentoring.id,
+            dailyMentoringId : user.dailyMentoring.id,
             applicantId,
           },
           logging: this.log.logSqlQuery(req.context),
