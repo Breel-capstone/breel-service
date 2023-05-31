@@ -234,6 +234,61 @@ module.exports = class ProjectRoute {
         '/',
         this.paginationMiddleware,
         this.projectController.getProjectList,
+      )
+      /**
+       * @swagger
+       * /v1/project/{projectId}:
+       *   get:
+       *     summary: Get project detail by Id
+       *     tags: [Project]
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: projectId
+       *         required: true
+       *         schema:
+       *           type: integer
+       *         description: The project id
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                 message: 
+       *                   type: object
+       *                   properties: 
+       *                     title: 
+       *                       type: string
+       *                     body: 
+       *                       type: string
+       *                 meta: 
+       *                   type: object
+       *                   properties: 
+       *                     path: 
+       *                       type: string
+       *                     statusCode: 
+       *                       type: integer
+       *                       format: int32
+       *                     timestamp: 
+       *                       type: string
+       *                       format: date-time
+       *                     requestId: 
+       *                       type: string
+       *                     timeElapsed: 
+       *                       type: string
+       *                 data:
+       *                   type: object
+       *                   allOf:
+       *                     - $ref: '#/components/schemas/Project'
+       *                     - $ref: '#/components/schemas/UtilityField'
+       *
+       */
+      .get(
+        '/:id',
+        this.projectController.getProjectById,
       );
 
     return projectRouter;
