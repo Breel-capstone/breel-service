@@ -200,7 +200,8 @@ module.exports = class MentorController {
 
   acceptMentee = async (req, res, next) => {
     const { uid } = req.user;
-    const { status, applicantId } = req.body;
+    const { status } = req.body;
+    const {applicantId} = req.params;
 
 
     const dailyMentoringRelation = {
