@@ -198,21 +198,17 @@ module.exports = class UserRoute {
        * @swagger
        * /v1/user/profile/{userId}:
        *   get:
-       *     summary: Get profile by ID
+       *     summary: Get profile by FireBase ID
        *     tags: [User]
        *     security:
        *       - bearerAuth: []
        *     parameters:
        *       - in: path
        *         name: userId  
-       *         required: trueDS 
+       *         required: true 
        *         schema:
-       *           type: integer
-       *           minimum: 1
-       *         description: The user ID
-       *       - $ref: '#/components/parameters/PageQuery'
-       *       - $ref: '#/components/parameters/LimitQuery'
-       *       - $ref: '#/components/parameters/DisableLimitQuery'
+       *           type: string
+       *         description: The user Firebase ID
        *     responses:
        *       200:
        *         content:

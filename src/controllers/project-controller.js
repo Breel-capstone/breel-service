@@ -393,4 +393,25 @@ module.exports = class ProjectController {
       next(error);
     }
   };
+
+  getProjectById = async (req, res, next) => {
+    const { id } = req.query;
+
+    try {
+      const projectDetail = await this.projectModel.findOne({
+        where: id,
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      this.helper.httpRespSuccess(
+        req,
+        res,
+        200,
+        projectDetail,
+      );    
+    
+    } catch (error) {
+      next(error);
+    }
+  };
 };
