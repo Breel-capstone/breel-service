@@ -13,7 +13,7 @@ var Sequelize = require('sequelize');
 var info = {
   revision: 20,
   name: 'noname',
-  created: '2023-06-03T15:24:04.511Z',
+  created: '2023-06-03T15:28:30.035Z',
   comment: ''
 };
 
@@ -92,7 +92,7 @@ var migrationCommands = function(transaction) {
     fn: 'addIndex',
     params: [
       'user_feedback',
-      ['freelancerId', 'date'],
+      ['freelancer_id', 'date'],
       {
         indexName: 'user_feedback_freelancer_id_date',
         name: 'user_feedback_freelancer_id_date',

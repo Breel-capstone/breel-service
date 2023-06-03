@@ -945,9 +945,9 @@
                 }
             },
             "indexes": {
-                "e05d8deb85677c40fdb36dd65875cf63233bd1f7": {
+                "d56f38fa24beca723ffd33aaf5681b4a47b85660": {
                     "fields": [
-                        "freelancerId",
+                        "freelancer_id",
                         "date"
                     ],
                     "unique": true,

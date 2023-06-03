@@ -41,7 +41,7 @@ module.exports = (sequelize, Sequelize) => {
       underscored: true,
       timestamps: true,
 
-      indexes: [{ fields: ['freelancerId', 'date'], unique: true }],
+      indexes: [{ fields: ['freelancer_id', 'date'], unique: true }],
     },
   );
 
