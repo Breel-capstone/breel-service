@@ -44,24 +44,21 @@ module.exports = class RouteHelper {
     const now = new Date();
     const requestTimeElapsed =
       now.getTime() - req.context.requestStartTime.getTime();
-    res.send(
-      {
-        message: {
-          title: 'Error',
-          body: message,
-        },
-        meta: {
-          path: this.config.Meta.Host + req.url,
-          statusCode: code,
-          timestamp: now,
-          requestId: req.context.requestId,
-          timeElapsed: `${requestTimeElapsed}ms`,
-        },
-        data: null,
-        pagination: null,
+    res.status(code).send({
+      message: {
+        title: 'Error',
+        body: message,
       },
-      code,
-    );
+      meta: {
+        path: this.config.Meta.Host + req.url,
+        statusCode: code,
+        timestamp: now,
+        requestId: req.context.requestId,
+        timeElapsed: `${requestTimeElapsed}ms`,
+      },
+      data: null,
+      pagination: null,
+    });
     req.context.responseCode = code;
   };
 };

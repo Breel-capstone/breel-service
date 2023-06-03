@@ -137,7 +137,31 @@ module.exports = class MentorRoute {
        *                         items:
        *                           type: string
        */
-      .get('/applicant', this.mentorController.getMentoringApplicants);
+      .get('/applicant', this.mentorController.getMentoringApplicants)
+      /** 
+       * @swagger
+       * /v1/mentor/{mentorId}/apply:
+       *   post:
+       *     tags: [Mentor]
+       *     summary: Apply daily mentor
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: mentorId
+       *         schema:
+       *           type: integer
+       *         required: true
+       *         description: Mentor id
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: string
+       *               example: Successfull applied
+      */
+      .post('/:mentorId/apply', this.mentorController.applyDailyMentoring);
 
     return mentorRouter;
   };
