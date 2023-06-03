@@ -880,7 +880,87 @@
                 }
             },
             "indexes": []
+        },
+        "user_feedback": {
+            "tableName": "user_feedback",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "freelancerId": {
+                    "allowNull": false,
+                    "references": {
+                        "model": "role",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "field": "freelancer_id",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "date": {
+                    "allowNull": false,
+                    "field": "date",
+                    "seqType": "Sequelize.DATE"
+                },
+                "feedback": {
+                    "allowNull": false,
+                    "field": "feedback",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "summary": {
+                    "allowNull": false,
+                    "field": "summary",
+                    "seqType": "Sequelize.TEXT"
+                },
+                "createdBy": {
+                    "field": "created_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "updatedBy": {
+                    "field": "updated_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "deletedBy": {
+                    "field": "deleted_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "field": "deleted_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": {
+                "e05d8deb85677c40fdb36dd65875cf63233bd1f7": {
+                    "fields": [
+                        "freelancerId",
+                        "date"
+                    ],
+                    "unique": true,
+                    "name": "user_feedback_freelancer_id_date",
+                    "options": {
+                        "indexName": "user_feedback_freelancer_id_date",
+                        "name": "user_feedback_freelancer_id_date",
+                        "indicesType": "UNIQUE",
+                        "type": "UNIQUE"
+                    }
+                }
+            }
         }
     },
-    "revision": 19
+    "revision": 20
 }

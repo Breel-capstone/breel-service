@@ -90,6 +90,10 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'applicantId',
       as: 'dailyMentoringApplicants',
     });
+    User.hasMany(models.UserFeedback, {
+      foreignKey: 'freelancerId',
+      as: 'userFeedbacks',
+    });
   };
   return User;
 };
