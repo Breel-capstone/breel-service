@@ -26,6 +26,8 @@ module.exports = class AuthRoute {
        *                 type: string
        *               password:
        *                 type: string
+       *               roleId:
+       *                 type: integer
        *     responses:
        *       201:
        *         description: user created

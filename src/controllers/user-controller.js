@@ -27,7 +27,7 @@ module.exports = class UserController {
 
   register = async (req, res, next) => {
     try {
-      const { email: userEmail, password } = req.body;
+      const { email: userEmail, password, roleId } = req.body;
 
       const authAPILink = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.config.Firebase.WebAPIKey}`;
       const authAPIResp = await httpClient.post(authAPILink, {
@@ -48,7 +48,7 @@ module.exports = class UserController {
         uid: localId,
         email,
         fullName: '',
-        roleId: 1, // TODO: remove this hardcoded roleId
+        roleId: roleId || 1,
       });
 
       const resp = {
