@@ -9,7 +9,7 @@ module.exports = class MentorController {
     userModel,
     userSkillModel,
     dailyMentoringApplicantModel,
-    notificationModel
+    notificationModel,
   ) {
     this.log = log;
     this.helper = helper;
@@ -31,7 +31,7 @@ module.exports = class MentorController {
         logging: this.log.logSqlQuery(req.context),
       });
 
-      if (user.roleId!== 2) {
+      if (user.roleId !== 2) {
         throw new ErrorLib('Only senior freelancer can create mentor', 403);
       }
 
@@ -201,8 +201,7 @@ module.exports = class MentorController {
   acceptMentee = async (req, res, next) => {
     const { uid } = req.user;
     const { status } = req.body;
-    const {applicantId} = req.params;
-
+    const { applicantId } = req.params;
 
     const dailyMentoringRelation = {
       model: this.dailyMentoringModel,
@@ -226,7 +225,7 @@ module.exports = class MentorController {
         { status, updatedBy: `${user.id}` },
         {
           where: {
-            dailyMentoringId : user.dailyMentoring.id,
+            dailyMentoringId: user.dailyMentoring.id,
             applicantId,
           },
           logging: this.log.logSqlQuery(req.context),
@@ -237,7 +236,7 @@ module.exports = class MentorController {
         status,
         user,
         user.fullName,
-        applicantId
+        applicantId,
       );
 
       this.helper.httpRespSuccess(req, res, 200, `Mentee ${status}`, null);
@@ -251,7 +250,7 @@ module.exports = class MentorController {
     status,
     user,
     mentorName,
-    applicantId
+    applicantId,
   ) => {
     await this.notificationModel.create(
       {
@@ -269,8 +268,72 @@ module.exports = class MentorController {
         updatedBy: `${user.id}`,
       },
       {
-        logging: this.log.logSqlQuery(req.context)
+        logging: this.log.logSqlQuery(req.context),
       },
     );
+  };
+
+  applyDailyMentoring = async (req, res, next) => {
+    const { mentorId } = req.params;
+    const { uid } = req.user;
+
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      const mentor = await this.userModel.findOne({
+        where: { id: mentorId },
+        attributes: ['id'],
+        include: [
+          {
+            model: this.dailyMentoringModel,
+            as: 'dailyMentoring',
+            required: true,
+            attributes: ['id'],
+          },
+        ],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (!mentor) {
+        throw new ErrorLib('Mentor not found', 404);
+      }
+
+      if (user.id === mentor.id) {
+        throw new ErrorLib('You cannot apply your own mentoring', 400);
+      }
+
+      const dmApplicant = await this.dailyMentoringApplicantModel.findOne({
+        where: {
+          dailyMentoringId: mentor.dailyMentoring.id,
+          applicantId: user.id,
+        },
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (dmApplicant) {
+        throw new ErrorLib('You have already applied this mentoring', 400);
+      }
+
+      await this.dailyMentoringApplicantModel.create(
+        {
+          dailyMentoringId: mentor.dailyMentoring.id,
+          applicantId: user.id,
+          status: 'Pending',
+          createdBy: `${user.id}`,
+          updatedBy: `${user.id}`,
+        },
+        {
+          logging: this.log.logSqlQuery(req.context),
+        },
+      );
+
+      this.helper.httpRespSuccess(req, res, 201, 'Successfully applied', null);
+    } catch (error) {
+      next(error);
+    }
   };
 };

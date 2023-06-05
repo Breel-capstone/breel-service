@@ -149,7 +149,7 @@ module.exports = class MentorRoute {
        *       - bearerAuth: []
        *     parameters:
        *       - in: path
-       *         name: applicantId  
+       *         name: applicantId
        *         required: true
        *     requestBody:
        *       content:
@@ -176,36 +176,60 @@ module.exports = class MentorRoute {
        *             schema:
        *               type: object
        *               properties:
-       *                message: 
+       *                message:
        *                  type: object
-       *                  properties: 
-       *                    title: 
+       *                  properties:
+       *                    title:
        *                      type: string
-       *                    body: 
+       *                    body:
        *                      type: string
-       *                meta: 
+       *                meta:
        *                  type: object
-       *                  properties: 
-       *                    path: 
+       *                  properties:
+       *                    path:
        *                      type: string
-       *                    statusCode: 
+       *                    statusCode:
        *                      type: integer
        *                      format: int32
-       *                    timestamp: 
+       *                    timestamp:
        *                      type: string
        *                      format: date-time
-       *                    requestId: 
+       *                    requestId:
        *                      type: string
-       *                    timeElapsed: 
+       *                    timeElapsed:
        *                      type: string
-       *                data: 
+       *                data:
        *                  type: string
        *                  format: nullable
-       *                pagination: 
+       *                pagination:
        *                  type: string
        *                  format: nullable
        */
-      .patch('/applicant/:applicantId', this.mentorController.acceptMentee);
+      .patch('/applicant/:applicantId', this.mentorController.acceptMentee)
+      /**
+       * @swagger
+       * /v1/mentor/{mentorId}/apply:
+       *   post:
+       *     tags: [Mentor]
+       *     summary: Apply daily mentor
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: mentorId
+       *         schema:
+       *           type: integer
+       *         required: true
+       *         description: Mentor id
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: string
+       *               example: Successfull applied
+       */
+      .post('/:mentorId/apply', this.mentorController.applyDailyMentoring);
 
     return mentorRouter;
   };
