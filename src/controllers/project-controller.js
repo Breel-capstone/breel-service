@@ -482,8 +482,6 @@ module.exports = class ProjectController {
         logging: this.log.logSqlQuery(req.context),
       });
 
-      console.log(projectProposals[0].freelancer);
-
       const response = projectProposals.map((proposal) => {
         const { freelancer } = proposal;
         const skills = freelancer.userSkills.map((skill) => skill.name);
