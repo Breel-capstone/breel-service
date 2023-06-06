@@ -116,58 +116,63 @@ module.exports = class ProjectController {
         where: { uid },
         attributes: ['id', 'role_id', 'full_name'],
         logging: this.log.logSqlQuery(req.context),
+        rejectOnEmpty: true,
       });
 
-      //check apakah junior atau tidak user yang melakukan request
-      if (!user || user.roleId === 1) {
-        throw new ErrorLib(
-          'You do not have permission to update this proposal',
-          403,
-        );
-      }
-      switch (user.roleId) {
-        case 1:
-          // code block
-          break;
-        case 2:
-          // code block
-          break;
-        case 3:
-          // code block
-          break;
-        default:
-        // code block
-      }
       //init identifikasi project yang mau diubah
       const projectCondition = {
         id: projectId,
       };
 
-      //menyesuaikan
-      if (user.roleId === 2) {
-        projectCondition.mentorId = user.id;
-      } else {
-        projectCondition.clientId = user.id;
+      /*
+      memastikan yang request akan mendapatkan
+      resource miliknya, tergantung role nya.
+      kecuali role freelancer junior
+      (nyoba pake rejectOnEmpty dari sequelize sendiri)
+      (klo kurang setuju report yak)
+      */
+
+      //if (user) {
+      switch (user.roleId) {
+        case 2:
+          projectCondition.mentorId = user.id;
+          break;
+        case 3:
+          projectCondition.clientId = user.id;
+          break;
+        default:
+          throw new ErrorLib(
+            'You do not have permission to update this proposal',
+            403,
+          );
       }
+      //}
 
       const project = await this.projectModel.findOne({
         where: projectCondition,
         logging: this.log.logSqlQuery(req.context),
+        rejectOnEmpty: true,
       });
 
-      if (!project) {
-        throw new ErrorLib(
-          'You do not have permission to update this proposal',
-          403,
-        );
-      }
+      // (nyoba pake rejectOnEmpty dari sequelize sendiri)
+      // (klo kurang setuju report yak)
+      // if (!project) {
+      //   throw new ErrorLib(
+      //     'You do not have permission to update this proposal',
+      //     403,
+      //   );
+      // }
 
+      // dbTransaction usage
       dbTransaction = await this.dbTransaction({
         logging: this.log.logSqlQuery(req.context),
       });
 
+      // cek jika sudah diacc/reejct sama client, menunggu acc freelancer/mentor
       if (project.status !== 'Menunggu Konfirmasi Freelancer') {
+        //  diacc sama client
         if (status === 'Accepted') {
+          // jika diacc client, update proposal
           await this.proposalModel.update(
             { status, updatedBy: `${user.id}` },
             {
@@ -180,6 +185,7 @@ module.exports = class ProjectController {
             },
           );
 
+          // jika diacc client, update project
           await this.projectModel.update(
             {
               status: 'Menunggu Konfirmasi Freelancer',
@@ -193,6 +199,7 @@ module.exports = class ProjectController {
             },
           );
 
+          // jika diacc client, kriim notif ke freelancer/mentor
           await this.notificationModel.create(
             this.createProposalNotification(
               'Accepted',
@@ -207,6 +214,8 @@ module.exports = class ProjectController {
             },
           );
 
+          // jika diacc client, reject proposal yang lain
+          // ambil semua proposal untuk project yang direquest
           const remainingProposal = await this.proposalModel.findAll({
             where: {
               projectId,
@@ -219,8 +228,10 @@ module.exports = class ProjectController {
             transaction: dbTransaction,
           });
 
+          // extract semua id dalam masing masing proposal kedalam proposalId
           const proposalIds = remainingProposal.map((proposal) => proposal.id);
 
+          // reject semua proposal dalam proposalIds
           await this.proposalModel.update(
             { status: 'Rejected', updatedBy: `${user.id}` },
             {
@@ -230,6 +241,9 @@ module.exports = class ProjectController {
             },
           );
 
+          // kirim notif untuk masing-masing pemilik proposal yang di reject
+          // jika userid = applicantId, bukannya berarti yang menerima notif rejection
+          // adalah yang di req.body? apakah solusinya memakai proposalId.freelancerId ?
           await this.notificationModel.bulkCreate(
             proposalIds.map((proposalId) =>
               this.createProposalNotification(
@@ -245,7 +259,24 @@ module.exports = class ProjectController {
               transaction: dbTransaction,
             },
           );
+
+          // di reject sama client
+          /* 
+          tbh ini redundant? kalau client hanya punya kemampuan meng acc cukup ga sih?
+          akhirnya kan automatically reject semua kecuali yang telah diacc kan? atau 
+          emang butuh selama pemilihan proposal dari suatu project client bisa mereject
+          suatu proposal secara manual? 
+
+          kalau ini dihapus sih juga akhirnya opsi status "Rejected" di req.body jadi 
+          dipertanyakan sih, mungkin cuma khusus freelancer/mentor untuk confirm atau
+          reject lagi.
+
+          more option the better mungkin argumennya?
+
+          */
         } else {
+
+          // jika di reject client, update proposal menjadi "Rejected"
           await this.proposalModel.update(
             { status, updatedBy: `${user.id}` },
             {
@@ -258,6 +289,7 @@ module.exports = class ProjectController {
             },
           );
 
+          // jika di reject client, kirim notif Rejected ke mentor/freelancer 
           await this.notificationModel.create(
             this.createProposalNotification(
               'Rejected',
@@ -272,8 +304,13 @@ module.exports = class ProjectController {
             },
           );
         }
+
+        // jika sudah diacc client, menunggu acc dari mentor/freelancer
       } else {
+
+        // di acc sama mentor/freelancer
         if (status === 'Accepted') {
+          // jika di acc sama mentor/freelancer, update status menjadi "Sedang Berjalan"
           await this.projectModel.update(
             {
               status: 'Menunggu Konfirmasi Freelancer',
@@ -287,6 +324,7 @@ module.exports = class ProjectController {
             },
           );
 
+          // jika di acc sama mentor/freelancer, kirim notif ke client
           await this.notificationModel.create(
             this.createProjectNotification(
               'Accepted',
@@ -303,12 +341,14 @@ module.exports = class ProjectController {
         }
       }
 
+      // laksanakan semua aksi modifikasi DB menjadi satu transaksi
       await dbTransaction.commit({
         logging: this.log.logSqlQuery(req.context),
       });
 
       this.helper.httpRespSuccess(req, res, 200, `Proposal ${status}`, null);
     } catch (error) {
+      // jika terjadi kesalahan, revert satu transaksi tersebut
       if (dbTransaction) {
         await dbTransaction.rollback({
           logging: this.log.logSqlQuery(req.context),
