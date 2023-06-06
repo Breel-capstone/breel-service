@@ -93,14 +93,22 @@ module.exports = class ProjectController {
   };
 
   updateProposalStatus = async (req, res, next) => {
+    /*
+    projectId = id project
+    proposalId = id proposal untuk project diatas
+    applicantId = id pemilik proposal, diperlukan sebagai double check
+    uid = id milik user (bisa mentor atau client)
+    */
     const { projectId, proposalId } = req.params;
     const { status, applicantId } = req.body;
     const { uid } = req.user;
 
+    //input sanitization
     if (!['Accepted', 'Rejected'].includes(status)) {
       throw new ErrorLib('Status must be either Accepted or Rejected', 400);
     }
 
+    //init transaction var, semua modifikasi db akan dimasukkan kedalam satu transaksi
     let dbTransaction;
 
     try {
@@ -110,17 +118,32 @@ module.exports = class ProjectController {
         logging: this.log.logSqlQuery(req.context),
       });
 
+      //check apakah junior atau tidak user yang melakukan request
       if (!user || user.roleId === 1) {
         throw new ErrorLib(
           'You do not have permission to update this proposal',
           403,
         );
       }
-
+      switch (user.roleId) {
+        case 1:
+          // code block
+          break;
+        case 2:
+          // code block
+          break;
+        case 3:
+          // code block
+          break;
+        default:
+        // code block
+      }
+      //init identifikasi project yang mau diubah
       const projectCondition = {
         id: projectId,
       };
 
+      //menyesuaikan
       if (user.roleId === 2) {
         projectCondition.mentorId = user.id;
       } else {
@@ -143,71 +166,99 @@ module.exports = class ProjectController {
         logging: this.log.logSqlQuery(req.context),
       });
 
-      if (status === 'Accepted') {
-        await this.proposalModel.update(
-          { status, updatedBy: `${user.id}` },
-          {
-            where: {
-              id: proposalId,
+      if (project.status !== 'Menunggu Konfirmasi Freelancer') {
+        if (status === 'Accepted') {
+          await this.proposalModel.update(
+            { status, updatedBy: `${user.id}` },
+            {
+              where: {
+                id: proposalId,
+                projectId,
+              },
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
+            },
+          );
+
+          await this.projectModel.update(
+            {
+              status: 'Menunggu Konfirmasi Freelancer',
+              assigneId: applicantId,
+              updatedBy: `${user.id}`,
+            },
+            {
+              where: projectCondition,
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
+            },
+          );
+
+          await this.notificationModel.create(
+            this.createProposalNotification(
+              'Accepted',
+              user.fullName,
+              applicantId,
               projectId,
+              proposalId,
+            ),
+            {
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
+            },
+          );
+
+          const remainingProposal = await this.proposalModel.findAll({
+            where: {
+              projectId,
+              status: 'Pending',
+              id: {
+                [Op.ne]: proposalId,
+              },
             },
             logging: this.log.logSqlQuery(req.context),
             transaction: dbTransaction,
-          },
-        );
+          });
 
-        await this.projectModel.update(
-          {
-            status: 'Sedang Berjalan',
-            assigneId: applicantId,
-            updatedBy: `${user.id}`,
-          },
-          {
-            where: projectCondition,
-            logging: this.log.logSqlQuery(req.context),
-            transaction: dbTransaction,
-          },
-        );
+          const proposalIds = remainingProposal.map((proposal) => proposal.id);
 
-        await this.notificationModel.create(
-          this.createProposalNotification(
-            'Accepted',
-            user.fullName,
-            applicantId,
-            projectId,
-            proposalId,
-          ),
-          {
-            logging: this.log.logSqlQuery(req.context),
-            transaction: dbTransaction,
-          },
-        );
-
-        const remainingProposal = await this.proposalModel.findAll({
-          where: {
-            projectId,
-            status: 'Pending',
-            id: {
-              [Op.ne]: proposalId,
+          await this.proposalModel.update(
+            { status: 'Rejected', updatedBy: `${user.id}` },
+            {
+              where: { id: { [Op.in]: proposalIds } },
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
             },
-          },
-          logging: this.log.logSqlQuery(req.context),
-          transaction: dbTransaction,
-        });
+          );
 
-        const proposalIds = remainingProposal.map((proposal) => proposal.id);
+          await this.notificationModel.bulkCreate(
+            proposalIds.map((proposalId) =>
+              this.createProposalNotification(
+                'Rejected',
+                user.fullName,
+                applicantId,
+                projectId,
+                proposalId,
+              ),
+            ),
+            {
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
+            },
+          );
+        } else {
+          await this.proposalModel.update(
+            { status, updatedBy: `${user.id}` },
+            {
+              where: {
+                id: proposalId,
+                projectId,
+              },
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
+            },
+          );
 
-        await this.proposalModel.update(
-          { status: 'Rejected', updatedBy: `${user.id}` },
-          {
-            where: { id: { [Op.in]: proposalIds } },
-            logging: this.log.logSqlQuery(req.context),
-            transaction: dbTransaction,
-          },
-        );
-
-        await this.notificationModel.bulkCreate(
-          proposalIds.map((proposalId) =>
+          await this.notificationModel.create(
             this.createProposalNotification(
               'Rejected',
               user.fullName,
@@ -215,38 +266,41 @@ module.exports = class ProjectController {
               projectId,
               proposalId,
             ),
-          ),
-          {
-            logging: this.log.logSqlQuery(req.context),
-            transaction: dbTransaction,
-          },
-        );
-      } else {
-        await this.proposalModel.update(
-          { status, updatedBy: `${user.id}` },
-          {
-            where: {
-              id: proposalId,
-              projectId,
+            {
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
             },
-            logging: this.log.logSqlQuery(req.context),
-            transaction: dbTransaction,
-          },
-        );
+          );
+        }
+      } else {
+        if (status === 'Accepted') {
+          await this.projectModel.update(
+            {
+              status: 'Menunggu Konfirmasi Freelancer',
+              assigneId: applicantId,
+              updatedBy: `${user.id}`,
+            },
+            {
+              where: projectCondition,
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
+            },
+          );
 
-        await this.notificationModel.create(
-          this.createProposalNotification(
-            'Rejected',
-            user.fullName,
-            applicantId,
-            projectId,
-            proposalId,
-          ),
-          {
-            logging: this.log.logSqlQuery(req.context),
-            transaction: dbTransaction,
-          },
-        );
+          await this.notificationModel.create(
+            this.createProjectNotification(
+              'Accepted',
+              user.fullName,
+              project.clientId,
+              projectId,
+              proposalId,
+            ),
+            {
+              logging: this.log.logSqlQuery(req.context),
+              transaction: dbTransaction,
+            },
+          );
+        }
       }
 
       await dbTransaction.commit({
@@ -272,6 +326,27 @@ module.exports = class ProjectController {
     proposalId,
   ) => ({
     userId: applicantId,
+    title:
+      status === 'Accepted'
+        ? 'Selamat! Proposal anda lolos'
+        : 'Mohon maaf!, proposal anda telah ditolak!',
+    message:
+      status === 'Accepted'
+        ? `${mentorName} sudah mereview proposal Anda dan tertarik untuk bekerja sama dengan Anda!`
+        : `${mentorName} sudah mereview proposal Anda dan memutuskan untuk tidak bekerja sama dengan Anda.`,
+    source: `PATCH - v1/project/${projectId}/proposal/${proposalId}`,
+    createdBy: `${user.id}`,
+    updatedBy: `${user.id}`,
+  });
+
+  createProjectNotification = async (
+    status,
+    mentorName,
+    clientId,
+    projectId,
+    proposalId,
+  ) => ({
+    userId: clientId,
     title:
       status === 'Accepted'
         ? 'Selamat! Proposal anda lolos'
