@@ -112,9 +112,10 @@ module.exports = class ProjectController {
     let dbTransaction;
 
     try {
+      // get user yang merequest ini
       const user = await this.userModel.findOne({
         where: { uid },
-        attributes: ['id', 'role_id', 'full_name'],
+        attributes: ['id', 'roleId', 'fullName'],
         logging: this.log.logSqlQuery(req.context),
         rejectOnEmpty: true,
       });
@@ -142,33 +143,32 @@ module.exports = class ProjectController {
           break;
         default:
           throw new ErrorLib(
-            'You do not have permission to update this proposal',
+            'You do not have permission to update this proposal/project',
             403,
           );
       }
       //}
 
+      // get project yang direquest
       const project = await this.projectModel.findOne({
         where: projectCondition,
-        logging: this.log.logSqlQuery(req.context),
-        rejectOnEmpty: true,
+        logging: this.log.logSqlQuery(req.context)
       });
 
-      // (nyoba pake rejectOnEmpty dari sequelize sendiri)
-      // (klo kurang setuju report yak)
-      // if (!project) {
-      //   throw new ErrorLib(
-      //     'You do not have permission to update this proposal',
-      //     403,
-      //   );
-      // }
+
+      if (!project) {
+        throw new ErrorLib(
+          'You do not have permission to update this proposal/project',
+          403,
+        );
+      }
 
       // dbTransaction usage
       dbTransaction = await this.dbTransaction({
         logging: this.log.logSqlQuery(req.context),
       });
 
-      // cek jika sudah diacc/reejct sama client, menunggu acc freelancer/mentor
+      // cek jika sudah diacc/reject sama client, menunggu acc freelancer/mentor
       if (project.status !== 'Menunggu Konfirmasi Freelancer') {
         //  diacc sama client
         if (status === 'Accepted') {
@@ -199,7 +199,7 @@ module.exports = class ProjectController {
             },
           );
 
-          // jika diacc client, kriim notif ke freelancer/mentor
+          // jika diacc client, kirim notif ke freelancer/mentor
           await this.notificationModel.create(
             this.createProposalNotification(
               'Accepted',
@@ -267,7 +267,7 @@ module.exports = class ProjectController {
           emang butuh selama pemilihan proposal dari suatu project client bisa mereject
           suatu proposal secara manual? 
 
-          kalau ini dihapus sih juga akhirnya opsi status "Rejected" di req.body jadi 
+          kalauAccepted ini dihapus sih juga akhirnya opsi status "Rejected" di req.body jadi 
           dipertanyakan sih, mungkin cuma khusus freelancer/mentor untuk confirm atau
           reject lagi.
 
@@ -275,7 +275,6 @@ module.exports = class ProjectController {
 
           */
         } else {
-
           // jika di reject client, update proposal menjadi "Rejected"
           await this.proposalModel.update(
             { status, updatedBy: `${user.id}` },
@@ -289,7 +288,7 @@ module.exports = class ProjectController {
             },
           );
 
-          // jika di reject client, kirim notif Rejected ke mentor/freelancer 
+          // jika di reject client, kirim notif Rejected ke mentor/freelancer
           await this.notificationModel.create(
             this.createProposalNotification(
               'Rejected',
@@ -307,36 +306,77 @@ module.exports = class ProjectController {
 
         // jika sudah diacc client, menunggu acc dari mentor/freelancer
       } else {
+        // ketika project dalam status "Menunggu Konfirmasi Freelancer"
+        // pastiin yang request sekarang adalah mentor, bukan client
+        if (user.roleId == 2) {
+          // di acc sama mentor/freelancer
+          if (status === 'Accepted') {
+            // jika di acc sama mentor/freelancer, update status menjadi "Sedang Berjalan"
+            await this.projectModel.update(
+              {
+                status: 'Menunggu Konfirmasi Freelancer',
+                assigneId: applicantId,
+                updatedBy: `${user.id}`,
+              },
+              {
+                where: projectCondition,
+                logging: this.log.logSqlQuery(req.context),
+                transaction: dbTransaction,
+              },
+            );
 
-        // di acc sama mentor/freelancer
-        if (status === 'Accepted') {
-          // jika di acc sama mentor/freelancer, update status menjadi "Sedang Berjalan"
-          await this.projectModel.update(
-            {
-              status: 'Menunggu Konfirmasi Freelancer',
-              assigneId: applicantId,
-              updatedBy: `${user.id}`,
-            },
-            {
-              where: projectCondition,
-              logging: this.log.logSqlQuery(req.context),
-              transaction: dbTransaction,
-            },
-          );
+            // jika di acc sama mentor/freelancer, kirim notif ke client
+            await this.notificationModel.create(
+              this.createProjectNotification(
+                'Accepted',
+                user.fullName,
+                project.clientId,
+                projectId,
+                proposalId,
+              ),
+              {
+                logging: this.log.logSqlQuery(req.context),
+                transaction: dbTransaction,
+              },
+            );
+            // di reject sama mentor/freelancer
+          } else {
+            // jika di reject sama mentor/freelancer, update status menjadi "Mencari"
+            await this.projectModel.update(
+              {
+                status: 'Mencari',
+                assigneId: applicantId,
+                updatedBy: `${user.id}`,
+              },
+              {
+                where: projectCondition,
+                logging: this.log.logSqlQuery(req.context),
+                transaction: dbTransaction,
+              },
+            );
 
-          // jika di acc sama mentor/freelancer, kirim notif ke client
-          await this.notificationModel.create(
-            this.createProjectNotification(
-              'Accepted',
-              user.fullName,
-              project.clientId,
-              projectId,
-              proposalId,
-            ),
-            {
-              logging: this.log.logSqlQuery(req.context),
-              transaction: dbTransaction,
-            },
+            // jika di acc sama mentor/freelancer, kirim notif ke client
+            await this.notificationModel.create(
+              this.createProjectNotification(
+                'Rejected',
+                user.fullName,
+                project.clientId,
+                projectId,
+                proposalId,
+              ),
+              {
+                logging: this.log.logSqlQuery(req.context),
+                transaction: dbTransaction,
+              },
+            );
+
+            // tambahin fitur semua yang tadi di reject menjadi pending?
+          }
+          // jika yang request client, dan status project adalah "Menunggu Konfirmasi Freelancer"
+        } else {
+          throw new ErrorLib(
+            'You do not have permission to update this project now',
+            403,
           );
         }
       }
@@ -372,6 +412,7 @@ module.exports = class ProjectController {
         : 'Mohon maaf!, proposal anda telah ditolak!',
     message:
       status === 'Accepted'
+        // mentor? bukannya client yang mereview proposal?
         ? `${mentorName} sudah mereview proposal Anda dan tertarik untuk bekerja sama dengan Anda!`
         : `${mentorName} sudah mereview proposal Anda dan memutuskan untuk tidak bekerja sama dengan Anda.`,
     source: `PATCH - v1/project/${projectId}/proposal/${proposalId}`,
@@ -389,12 +430,12 @@ module.exports = class ProjectController {
     userId: clientId,
     title:
       status === 'Accepted'
-        ? 'Selamat! Proposal anda lolos'
-        : 'Mohon maaf!, proposal anda telah ditolak!',
+        ? `${mentorName} bersedia untuk bekerja sama!`
+        : `${mentorName} tidak bersedia untuk bekerja sama!`,
     message:
       status === 'Accepted'
-        ? `${mentorName} sudah mereview proposal Anda dan tertarik untuk bekerja sama dengan Anda!`
-        : `${mentorName} sudah mereview proposal Anda dan memutuskan untuk tidak bekerja sama dengan Anda.`,
+        ? `${mentorName} bersedia untuk bekerja sama dengan anda untuk menyelesaikan project!`
+        : `${mentorName} tidak memutuskan untuk melanjutkan perjanjian kerjasama project anda!`,
     source: `PATCH - v1/project/${projectId}/proposal/${proposalId}`,
     createdBy: `${user.id}`,
     updatedBy: `${user.id}`,
