@@ -28,6 +28,7 @@ module.exports = class Controller {
       model.ProjectMentorship,
       model.Notification,
       model.sequelize.transaction.bind(model.sequelize),
+      model.UserSkill,
     );
     this.mentor = new MentorController(
       log,
@@ -36,7 +37,7 @@ module.exports = class Controller {
       model.User,
       model.UserSkill,
       model.DailyMentoringApplicant,
-      model.Notification
+      model.Notification,
     );
     this.notification = new NotificationController(
       log,
@@ -49,7 +50,7 @@ module.exports = class Controller {
       helper,
       model.Proposal,
       model.User,
-      model.Project
+      model.Project,
     );
   }
 

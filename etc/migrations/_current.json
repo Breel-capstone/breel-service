@@ -297,6 +297,10 @@
                     "field": "budget",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "budgetString": {
+                    "field": "budget_string",
+                    "seqType": "Sequelize.STRING"
+                },
                 "status": {
                     "defaultValue": {
                         "value": "Mencari"
@@ -962,5 +966,5 @@
             }
         }
     },
-    "revision": 20
+    "revision": 21
 }
