@@ -16,3 +16,6 @@ alter table
 
 alter table
     "project_mentorship" drop constraint project_mentorship_mentor_id_fkey;
+
+alter table
+    user_feedback drop constraint user_feedback_freelancer_id_fkey;
