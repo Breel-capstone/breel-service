@@ -1,4 +1,6 @@
+const ErrorLib = require('../../sdk/errorlib');
 const { Op } = require('sequelize');
+
 module.exports = class ProjectController {
   constructor(
     log,
@@ -9,6 +11,7 @@ module.exports = class ProjectController {
     projectMentorshipModel,
     notificationModel,
     dbTransaction,
+    userSkillModel,
   ) {
     this.log = log;
     this.helper = helper;
@@ -18,6 +21,7 @@ module.exports = class ProjectController {
     this.projectMentorshipModel = projectMentorshipModel;
     this.notificationModel = notificationModel;
     this.dbTransaction = dbTransaction;
+    this.userSkillModel = userSkillModel;
   }
 
   createProjectProposal = async (req, res, next) => {
@@ -54,7 +58,7 @@ module.exports = class ProjectController {
 
   createProject = async (req, res, next) => {
     const { uid } = req.user;
-    const { title, description, durationMonth, budget } = req.body;
+    const { title, description, durationMonth, budget, skills } = req.body;
 
     try {
       const user = await this.userModel.findOne({
@@ -69,11 +73,13 @@ module.exports = class ProjectController {
 
       await this.projectModel.create(
         {
-          userId: user.id,
+          clientId: user.id,
           title,
           description,
           durationMonth,
           budget,
+          budgetString: budget.toLocaleString('id-ID'),
+          skills: skills.join(','),
         },
         {
           logging: this.log.logSqlQuery(req.context),
@@ -104,7 +110,7 @@ module.exports = class ProjectController {
         logging: this.log.logSqlQuery(req.context),
       });
 
-      if (!user || user.roleId !== 2 || user.roleId !== 3) {
+      if (!user || user.roleId === 1) {
         throw new ErrorLib(
           'You do not have permission to update this proposal',
           403,
@@ -378,7 +384,11 @@ module.exports = class ProjectController {
       });
 
       projectList.forEach((project) => {
-        project.dataValues.skills = project.dataValues.skills.split(',');
+        if (project.skills === null) {
+          project.skills = [];
+        } else {
+          project.skills = project.skills.split(',');
+        }
       });
 
       this.helper.httpRespSuccess(
@@ -407,6 +417,88 @@ module.exports = class ProjectController {
       });
 
       this.helper.httpRespSuccess(req, res, 200, projectDetail);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getProjectProposal = async (req, res, next) => {
+    const { projectId } = req.params;
+    const { uid } = req.user;
+
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id', 'roleId'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      console.log(user);
+
+      if (!user || user.roleId === 1) {
+        throw new ErrorLib(
+          'You are not authorized to access this resource',
+          403,
+        );
+      }
+
+      const projectCond = {
+        id: projectId,
+      };
+      if (user.roleId === 2) {
+        projectCond.mentorId = user.id;
+      } else {
+        projectCond.clientId = user.id;
+      }
+
+      const project = await this.projectModel.findOne({
+        where: projectCond,
+
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (!project) {
+        throw new ErrorLib('Project not found', 404);
+      }
+
+      const projectProposals = await this.proposalModel.findAll({
+        where: {
+          projectId,
+        },
+        include: [
+          {
+            model: this.userModel,
+            as: 'freelancer',
+            attributes: ['id', 'uid', 'fullName', 'profileUrl'],
+            include: [
+              {
+                model: this.userSkillModel,
+                as: 'userSkills',
+                attributes: ['skillName'],
+              },
+            ],
+          },
+        ],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      console.log(projectProposals[0].freelancer);
+
+      const response = projectProposals.map((proposal) => {
+        const { freelancer } = proposal;
+        const skills = freelancer.userSkills.map((skill) => skill.name);
+        return {
+          id: proposal.id,
+          applicantId: freelancer.id,
+          applicantUid: freelancer.uid,
+          applicantName: freelancer.fullName,
+          applicantProfileUrl: freelancer.profileUrl,
+          applicantSkills: skills,
+          status: proposal.status,
+        };
+      });
+
+      this.helper.httpRespSuccess(req, res, 200, response);
     } catch (error) {
       next(error);
     }

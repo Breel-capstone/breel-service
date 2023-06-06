@@ -27,6 +27,8 @@ module.exports = class ProjectRoute {
    *           type: integer
    *         budget:
    *           type: integer
+   *         budgetString:
+   *           type: string
    *         status:
    *           type: string
    *         skills:
@@ -101,6 +103,10 @@ module.exports = class ProjectRoute {
        *                type: integer
        *              budget:
        *                type: integer
+       *              skills:
+       *                type: array
+       *                items:
+       *                  type: string
        *     responses:
        *       201:
        *         content:
@@ -224,7 +230,7 @@ module.exports = class ProjectRoute {
        *                 datas:
        *                   type: object
        *                   allOf:
-       *                     - $ref: '#/components/schemas/Proposal'
+       *                     - $ref: '#/components/schemas/Project'
        */
       .get(
         '/',
@@ -253,27 +259,27 @@ module.exports = class ProjectRoute {
        *             schema:
        *               type: object
        *               properties:
-       *                 message: 
+       *                 message:
        *                   type: object
-       *                   properties: 
-       *                     title: 
+       *                   properties:
+       *                     title:
        *                       type: string
-       *                     body: 
+       *                     body:
        *                       type: string
-       *                 meta: 
+       *                 meta:
        *                   type: object
-       *                   properties: 
-       *                     path: 
+       *                   properties:
+       *                     path:
        *                       type: string
-       *                     statusCode: 
+       *                     statusCode:
        *                       type: integer
        *                       format: int32
-       *                     timestamp: 
+       *                     timestamp:
        *                       type: string
        *                       format: date-time
-       *                     requestId: 
+       *                     requestId:
        *                       type: string
-       *                     timeElapsed: 
+       *                     timeElapsed:
        *                       type: string
        *                 data:
        *                   type: object
@@ -282,10 +288,49 @@ module.exports = class ProjectRoute {
        *                     - $ref: '#/components/schemas/UtilityField'
        *
        */
-      .get(
-        '/:id',
-        this.projectController.getProjectById,
-      );
+      .get('/:id', this.projectController.getProjectById)
+      /**
+       * @swagger
+       * /v1/project/{projectId}/proposal:
+       *   get:
+       *     summary: Get project's proposal
+       *     tags: [Project]
+       *     security:
+       *       - bearerAuth: []
+       *     parameters:
+       *       - in: path
+       *         name: projectId
+       *         required: true
+       *         schema:
+       *           type: integer
+       *         description: The project id
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: array
+       *               items:
+       *                 type: object
+       *                 properties:
+       *                   id:
+       *                     type: integer
+       *                   applicantId:
+       *                     type: integer
+       *                   applicantUid:
+       *                     type: string
+       *                   applicantName:
+       *                     type: string
+       *                   applicantProfileUrl:
+       *                     type: string
+       *                   applicantSkills:
+       *                     type: array
+       *                     items:
+       *                       type: string
+       *                   status:
+       *                      type: string
+       */
+      .get('/:projectId/proposal', this.projectController.getProjectProposal);
 
     return projectRouter;
   };

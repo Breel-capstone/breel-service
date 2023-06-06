@@ -27,6 +27,9 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      budgetString: {
+        type: Sequelize.STRING,
+      },
       status: {
         type: Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai'),
         defaultValue: 'Mencari',
