@@ -156,6 +156,12 @@ module.exports = class ProjectRoute {
        *   patch:
        *     tags: [Project]
        *     summary: Update proposal status
+       *     description: |
+       *       berikut alur acc project (yang di bold adalah yang bisa dilakukan di endpoint ini):
+       *       1. client buat project
+       *       2. mentor buat proposal
+       *       3. **client acc proposal**
+       *       4. **mentor acc project**
        *     security:
        *       - bearerAuth: []
        *     parameters:

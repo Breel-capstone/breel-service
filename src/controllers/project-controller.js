@@ -191,6 +191,7 @@ module.exports = class ProjectController {
               status: 'Menunggu Konfirmasi Freelancer',
               assigneId: applicantId,
               updatedBy: `${user.id}`,
+              mentorId: applicantId
             },
             {
               where: projectCondition,
@@ -201,12 +202,13 @@ module.exports = class ProjectController {
 
           // jika diacc client, kirim notif ke freelancer/mentor
           await this.notificationModel.create(
-            this.createProposalNotification(
+            await this.createProposalNotification(
               'Accepted',
               user.fullName,
               applicantId,
               projectId,
               proposalId,
+              user
             ),
             {
               logging: this.log.logSqlQuery(req.context),
@@ -252,6 +254,7 @@ module.exports = class ProjectController {
                 applicantId,
                 projectId,
                 proposalId,
+                user,
               ),
             ),
             {
@@ -290,12 +293,13 @@ module.exports = class ProjectController {
 
           // jika di reject client, kirim notif Rejected ke mentor/freelancer
           await this.notificationModel.create(
-            this.createProposalNotification(
+            await this.createProposalNotification(
               'Rejected',
               user.fullName,
               applicantId,
               projectId,
               proposalId,
+              user
             ),
             {
               logging: this.log.logSqlQuery(req.context),
@@ -314,7 +318,7 @@ module.exports = class ProjectController {
             // jika di acc sama mentor/freelancer, update status menjadi "Sedang Berjalan"
             await this.projectModel.update(
               {
-                status: 'Menunggu Konfirmasi Freelancer',
+                status: 'Sedang Berjalan',
                 assigneId: applicantId,
                 updatedBy: `${user.id}`,
               },
@@ -327,12 +331,13 @@ module.exports = class ProjectController {
 
             // jika di acc sama mentor/freelancer, kirim notif ke client
             await this.notificationModel.create(
-              this.createProjectNotification(
+              await this.createProjectNotification(
                 'Accepted',
                 user.fullName,
                 project.clientId,
                 projectId,
                 proposalId,
+                user
               ),
               {
                 logging: this.log.logSqlQuery(req.context),
@@ -357,12 +362,13 @@ module.exports = class ProjectController {
 
             // jika di acc sama mentor/freelancer, kirim notif ke client
             await this.notificationModel.create(
-              this.createProjectNotification(
+              await this.createProjectNotification(
                 'Rejected',
                 user.fullName,
                 project.clientId,
                 projectId,
                 proposalId,
+                user
               ),
               {
                 logging: this.log.logSqlQuery(req.context),
@@ -404,6 +410,7 @@ module.exports = class ProjectController {
     applicantId,
     projectId,
     proposalId,
+    user
   ) => ({
     userId: applicantId,
     title:
@@ -426,6 +433,7 @@ module.exports = class ProjectController {
     clientId,
     projectId,
     proposalId,
+    user,
   ) => ({
     userId: clientId,
     title:
