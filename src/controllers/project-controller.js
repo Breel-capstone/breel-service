@@ -264,19 +264,6 @@ module.exports = class ProjectController {
           );
 
           // di reject sama client
-          /* 
-          tbh ini redundant? kalau client hanya punya kemampuan meng acc cukup ga sih?
-          akhirnya kan automatically reject semua kecuali yang telah diacc kan? atau 
-          emang butuh selama pemilihan proposal dari suatu project client bisa mereject
-          suatu proposal secara manual? 
-
-          kalauAccepted ini dihapus sih juga akhirnya opsi status "Rejected" di req.body jadi 
-          dipertanyakan sih, mungkin cuma khusus freelancer/mentor untuk confirm atau
-          reject lagi.
-
-          more option the better mungkin argumennya?
-
-          */
         } else {
           // jika di reject client, update proposal menjadi "Rejected"
           await this.proposalModel.update(
