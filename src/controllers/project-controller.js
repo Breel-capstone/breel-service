@@ -117,7 +117,6 @@ module.exports = class ProjectController {
         where: { uid },
         attributes: ['id', 'roleId', 'fullName'],
         logging: this.log.logSqlQuery(req.context),
-        rejectOnEmpty: true,
       });
 
       //init identifikasi project yang mau diubah
@@ -133,28 +132,32 @@ module.exports = class ProjectController {
       (klo kurang setuju report yak)
       */
 
-      //if (user) {
-      switch (user.roleId) {
-        case 2:
-          projectCondition.mentorId = user.id;
-          break;
-        case 3:
-          projectCondition.clientId = user.id;
-          break;
-        default:
-          throw new ErrorLib(
-            'You do not have permission to update this proposal/project',
-            403,
-          );
+      if (user) {
+        switch (user.roleId) {
+          case 2:
+            projectCondition.mentorId = user.id;
+            break;
+          case 3:
+            projectCondition.clientId = user.id;
+            break;
+          default:
+            throw new ErrorLib(
+              'You do not have permission to update this proposal/project',
+              403,
+            );
+        }
+      } else {
+        throw new ErrorLib(
+          'You do not have permission to update this proposal/project',
+          403,
+        );
       }
-      //}
 
       // get project yang direquest
       const project = await this.projectModel.findOne({
         where: projectCondition,
-        logging: this.log.logSqlQuery(req.context)
+        logging: this.log.logSqlQuery(req.context),
       });
-
 
       if (!project) {
         throw new ErrorLib(
@@ -191,7 +194,7 @@ module.exports = class ProjectController {
               status: 'Menunggu Konfirmasi Freelancer',
               assigneId: applicantId,
               updatedBy: `${user.id}`,
-              mentorId: applicantId
+              mentorId: applicantId,
             },
             {
               where: projectCondition,
@@ -208,7 +211,7 @@ module.exports = class ProjectController {
               applicantId,
               projectId,
               proposalId,
-              user
+              user,
             ),
             {
               logging: this.log.logSqlQuery(req.context),
@@ -244,14 +247,12 @@ module.exports = class ProjectController {
           );
 
           // kirim notif untuk masing-masing pemilik proposal yang di reject
-          // jika userid = applicantId, bukannya berarti yang menerima notif rejection
-          // adalah yang di req.body? apakah solusinya memakai proposalId.freelancerId ?
           await this.notificationModel.bulkCreate(
             proposalIds.map((proposalId) =>
               this.createProposalNotification(
                 'Rejected',
                 user.fullName,
-                applicantId,
+                proposalId.freelancerId,
                 projectId,
                 proposalId,
                 user,
@@ -286,7 +287,7 @@ module.exports = class ProjectController {
               applicantId,
               projectId,
               proposalId,
-              user
+              user,
             ),
             {
               logging: this.log.logSqlQuery(req.context),
@@ -324,7 +325,7 @@ module.exports = class ProjectController {
                 project.clientId,
                 projectId,
                 proposalId,
-                user
+                user,
               ),
               {
                 logging: this.log.logSqlQuery(req.context),
@@ -355,7 +356,7 @@ module.exports = class ProjectController {
                 project.clientId,
                 projectId,
                 proposalId,
-                user
+                user,
               ),
               {
                 logging: this.log.logSqlQuery(req.context),
@@ -397,7 +398,7 @@ module.exports = class ProjectController {
     applicantId,
     projectId,
     proposalId,
-    user
+    user,
   ) => ({
     userId: applicantId,
     title:
@@ -406,7 +407,6 @@ module.exports = class ProjectController {
         : 'Mohon maaf!, proposal anda telah ditolak!',
     message:
       status === 'Accepted'
-        // mentor? bukannya client yang mereview proposal?
         ? `${mentorName} sudah mereview proposal Anda dan tertarik untuk bekerja sama dengan Anda!`
         : `${mentorName} sudah mereview proposal Anda dan memutuskan untuk tidak bekerja sama dengan Anda.`,
     source: `PATCH - v1/project/${projectId}/proposal/${proposalId}`,
