@@ -105,10 +105,29 @@ module.exports = class UserController {
   };
 
   profileById = async (req, res, next) => {
+    const userSkillRelation = {
+      model: this.userSkillModel,
+      as: 'userSkills',
+      attributes: ['skill_name'],
+    };
+
+    const userProjectExperience = {
+      model: this.userProjectExperienceModel,
+      as: 'userProjectExperiences',
+      attributes: ['title', 'thumbnailUrl', 'description'],
+    };
+
+    const userExperienceModel = {
+      model: this.userExperienceModel,
+      as: 'userExperiences',
+      attributes: ['companyName', 'location', 'title', 'startDate', 'endDate', 'description'],
+    };
+
     try {
       let userInfo;
       userInfo = await this.userModel.findOne({
         logging: this.log.logSqlQuery(req.context),
+        include: [userProjectExperience, userSkillRelation, userExperienceModel],
         where: { uid: req.params.userId },
       });
 
