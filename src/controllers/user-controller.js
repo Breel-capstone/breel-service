@@ -12,6 +12,8 @@ module.exports = class UserController {
     userExperienceModel,
     userProjectExperienceModel,
     userSkillModel,
+    userFeedbackModel,
+    dailyMentoringApplicantModel,
     dbTransaction,
   ) {
     this.log = log;
@@ -22,6 +24,8 @@ module.exports = class UserController {
     this.userExperienceModel = userExperienceModel;
     this.userProjectExperienceModel = userProjectExperienceModel;
     this.userSkillModel = userSkillModel;
+    this.userFeedbackModel = userFeedbackModel;
+    this.dailyMentoringApplicantModel = dailyMentoringApplicantModel;
     this.dbTransaction = dbTransaction;
   }
 
@@ -207,35 +211,34 @@ module.exports = class UserController {
     }
   };
 
-  getUserMentor = async (req, res, next) => {
-    const dummyDatas = [
-      {
-        id: 1,
-        fullName: 'Anjani P.',
-        price: 500_000,
-        priceString: '500.000',
-        profileUrl: 'https://picsum.photos/200',
-        skills: ['UI/UX', 'Figma'],
-      },
-    ];
+  getUserFeedback = async (req, res, next) => {
+    const { uid } = req.user;
 
-    for (let i = 1; i < 10; i++) {
-      dummyDatas.push({
-        id: i + 1,
-        fullName: dummyDatas[0].fullName,
-        price: dummyDatas[0].price,
-        priceString: dummyDatas[0].priceString,
-        profileUrl: dummyDatas[0].profileUrl,
-        skills: dummyDatas[0].skills,
+    try {
+      const user = await this.userModel.findOne({
+        logging: this.log.logSqlQuery(req.context),
+        where: { uid },
+        attributes: ['id', 'roleId'],
       });
+
+      if (user.roleId === 3) {
+        throw new ErrorLib(
+          'You do not have permission to access this API',
+          403,
+        );
+      }
+
+      const userFeedbackList = await this.userFeedbackModel.findAll({
+        where: {
+          freelancerId: user.id,
+          date: new Date().toLocaleDateString('en-US'),
+        },
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      this.helper.httpRespSuccess(req, res, 200, userFeedbackList, null);
+    } catch (error) {
+      next(error);
     }
-
-    const paginationResponse = this.helper.processPagination(
-      req.paginationQuery,
-      dummyDatas.length,
-      dummyDatas.length,
-    );
-
-    this.helper.httpRespSuccess(req, res, 200, dummyDatas, paginationResponse);
   };
 };

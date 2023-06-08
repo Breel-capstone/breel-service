@@ -147,53 +147,6 @@ module.exports = class UserRoute {
        *
        */
       .post('/register-detail', this.userController.registerDetail)
-
-      /**
-       * @swagger
-       * /v1/user/mentor:
-       *   get:
-       *     summary: Get user mentors
-       *     tags: [User]
-       *     security:
-       *       - bearerAuth: []
-       *     parameters:
-       *       - $ref: '#/components/parameters/PageQuery'
-       *       - $ref: '#/components/parameters/LimitQuery'
-       *       - $ref: '#/components/parameters/DisableLimitQuery'
-       *     responses:
-       *       200:
-       *         content:
-       *           application/json:
-       *             schema:
-       *               type: object
-       *               properties:
-       *                 data:
-       *                   type: array
-       *                   items:
-       *                     type: object
-       *                     properties:
-       *                       id:
-       *                         type: integer
-       *                       fullName:
-       *                         type: string
-       *                       price:
-       *                         type: integer
-       *                       priceString:
-       *                         type: string
-       *                       profileUrl:
-       *                         type: string
-       *                       skills:
-       *                        type: array
-       *                        items:
-       *                          type: string
-       *                 pagination:
-       *                   $ref: '#/components/schemas/Pagination'
-       */
-      .get(
-        '/mentor',
-        this.paginationMiddleware,
-        this.userController.getUserMentor,
-      )
       /**
        * @swagger
        * /v1/user/profile/{userId}:
@@ -204,8 +157,8 @@ module.exports = class UserRoute {
        *       - bearerAuth: []
        *     parameters:
        *       - in: path
-       *         name: userId  
-       *         required: true 
+       *         name: userId
+       *         required: true
        *         schema:
        *           type: string
        *         description: The user Firebase ID
@@ -218,14 +171,33 @@ module.exports = class UserRoute {
        *               allOf:
        *                 - $ref: '#/components/schemas/User'
        *                 - $ref: '#/components/schemas/UtilityField'
-       * 
+       *
        */
       .get(
         '/profile/:userId',
         this.paginationMiddleware,
         this.userController.profileById,
-      );
-
+      )
+      /**
+       * @swagger
+       * /v1/user/feedback:
+       *   get:
+       *     summary: Get user summary and feedback
+       *     tags: [User]
+       *     security:
+       *       - bearerAuth: []
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               allOf:
+       *                 - $ref: '#/components/schemas/User'
+       *                 - $ref: '#/components/schemas/UtilityField'
+       *
+       */
+      .get('/feedback', this.userController.getUserFeedback);
     return userRouter;
   };
 };
