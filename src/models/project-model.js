@@ -31,7 +31,12 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai'),
+        type: Sequelize.ENUM(
+          'Mencari',
+          'Menunggu Konfirmasi Freelancer' ,
+          'Sedang Berjalan',
+          'Selesai',
+        ),
         defaultValue: 'Mencari',
       },
       skills: {
