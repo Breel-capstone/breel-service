@@ -215,14 +215,109 @@ module.exports = class UserRoute {
        *           application/json:
        *             schema:
        *               type: object
-       *               allOf:
-       *                 - $ref: '#/components/schemas/User'
-       *                 - $ref: '#/components/schemas/UtilityField'
+       *               properties:
+       *                 message: 
+       *                   type: object
+       *                   properties: 
+       *                     title: 
+       *                       type: string
+       *                     body: 
+       *                       type: string
+       *                     meta: 
+       *                       type: object
+       *                       properties: 
+       *                         path: 
+       *                           type: string
+       *                         statusCode: 
+       *                           type: integer
+       *                           format: int32
+       *                         timestamp: 
+       *                           type: string
+       *                           format: date-time
+       *                         requestId: 
+       *                           type: string
+       *                         timeElapsed: 
+       *                           type: string
+       *                     data: 
+       *                       type: object
+       *                       properties: 
+       *                         id: 
+       *                           type: integer
+       *                           format: int32
+       *                         uid: 
+       *                           type: string
+       *                         email: 
+       *                           type: string
+       *                         roleId: 
+       *                           type: integer
+       *                           format: int32
+       *                         fullName: 
+       *                           type: string
+       *                         title: 
+       *                           type: string
+       *                         description: 
+       *                           type: string
+       *                         profileUrl: 
+       *                           type: string
+       *                         createdBy: 
+       *                           type: string
+       *                           format: nullable
+       *                         updatedBy: 
+       *                           type: string
+       *                           format: nullable
+       *                         deletedBy: 
+       *                           type: string
+       *                           format: nullable
+       *                         createdAt: 
+       *                           type: string
+       *                           format: date-time
+       *                         updatedAt: 
+       *                           type: string
+       *                           format: date-time
+       *                         deletedAt: 
+       *                           type: string
+       *                           format: nullable
+       *                         userProjectExperiences: 
+       *                           type: array
+       *                           items: 
+       *                             type: object
+       *                             properties: 
+       *                               title: 
+       *                                 type: string
+       *                               thumbnailUrl: 
+       *                                 type: string
+       *                               description: 
+       *                                 type: string
+       *                         userSkills: 
+       *                           type: array
+       *                           items: 
+       *                             type: object
+       *                             properties: 
+       *                               skill_name: 
+       *                                 type: string
+       *                         userExperiences: 
+       *                           type: array
+       *                           items: 
+       *                             type: object
+       *                             properties: 
+       *                               companyName: 
+       *                                 type: string
+       *                               location: 
+       *                                 type: string
+       *                               title: 
+       *                                 type: string
+       *                               startDate: 
+       *                                 type: string
+       *                                 format: date-time
+       *                               endDate: 
+       *                                 type: string
+       *                                 format: date-time
+       *                               description: 
+       *                                 type: string
        * 
        */
       .get(
         '/profile/:userId',
-        this.paginationMiddleware,
         this.userController.profileById,
       );
 
