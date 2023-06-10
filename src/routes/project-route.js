@@ -336,7 +336,28 @@ module.exports = class ProjectRoute {
        *                   status:
        *                      type: string
        */
-      .get('/:projectId/proposal', this.projectController.getProjectProposal);
+      .get('/:projectId/proposal', this.projectController.getProjectProposal)
+      /**
+       * @swagger
+       * /v1/project/mentor:
+       *   get:
+       *     tags: [Project]
+       *     summary: Get project mentorship list for mentor
+       *     security:
+       *       - bearerAuth: []
+       *     responses:
+       *       200:
+       *         content:
+       *           application/json:
+       *             schema:
+       *               type: object
+       *               properties:
+       *                 data:
+       *                   type: object
+       *                   allOf:
+       *                     - $ref: '#/components/schemas/Project'
+       */
+      .get('/mentor', this.projectController.getProjectMentorshipList);
 
     return projectRouter;
   };

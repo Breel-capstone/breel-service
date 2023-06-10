@@ -567,6 +567,8 @@ module.exports = class ProjectController {
         logging: this.log.logSqlQuery(req.context),
       });
 
+      projectDetail.skills = [...new Set(projectDetail.skills.split(','))];
+
       this.helper.httpRespSuccess(req, res, 200, projectDetail);
     } catch (error) {
       next(error);
@@ -604,7 +606,6 @@ module.exports = class ProjectController {
 
       const project = await this.projectModel.findOne({
         where: projectCond,
-
         logging: this.log.logSqlQuery(req.context),
       });
 
@@ -635,19 +636,44 @@ module.exports = class ProjectController {
 
       const response = projectProposals.map((proposal) => {
         const { freelancer } = proposal;
-        const skills = freelancer.userSkills.map((skill) => skill.name);
+        const skills = freelancer.userSkills.map((skill) => skill.skillName);
         return {
           id: proposal.id,
           applicantId: freelancer.id,
           applicantUid: freelancer.uid,
           applicantName: freelancer.fullName,
           applicantProfileUrl: freelancer.profileUrl,
-          applicantSkills: skills,
+          applicantSkills: [...new Set(skills)],
           status: proposal.status,
         };
       });
 
       this.helper.httpRespSuccess(req, res, 200, response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getProjectMentorshipList = async (req, res) => {
+    const { uid } = req.user;
+
+    try {
+      const user = await this.userModel.findOne({
+        where: { uid },
+        attributes: ['id', 'roleId'],
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      if (!user || user.roleId !== 2) {
+        throw new ErrorLib("You don't have permission to access this API");
+      }
+
+      const project = await this.projectModel.findAll({
+        where: { mentorId: user.id, status: { [Op.ne]: 'Selesai' } },
+        logging: this.log.logSqlQuery(req.context),
+      });
+
+      this.helper.httpRespSuccess(req, res, 200, project);
     } catch (error) {
       next(error);
     }

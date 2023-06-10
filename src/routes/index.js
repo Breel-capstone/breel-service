@@ -1,6 +1,7 @@
 const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const cors = require('cors');
 
 const path = require('path');
 const Context = require('../../sdk/context');
@@ -161,6 +162,7 @@ module.exports = class Route {
    */
 
   registerRoutes = () => {
+    this.app.use(cors());
     this.app.set('view engine', 'ejs');
     this.app.engine('html', require('ejs').renderFile);
     this.app.use(express.static('static'));

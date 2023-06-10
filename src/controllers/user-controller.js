@@ -14,6 +14,7 @@ module.exports = class UserController {
     userSkillModel,
     userFeedbackModel,
     dailyMentoringApplicantModel,
+    dailyMentoringModel,
     dbTransaction,
   ) {
     this.log = log;
@@ -26,6 +27,7 @@ module.exports = class UserController {
     this.userSkillModel = userSkillModel;
     this.userFeedbackModel = userFeedbackModel;
     this.dailyMentoringApplicantModel = dailyMentoringApplicantModel;
+    this.dailyMentoringModel = dailyMentoringModel;
     this.dbTransaction = dbTransaction;
   }
 
@@ -109,29 +111,41 @@ module.exports = class UserController {
   };
 
   profileById = async (req, res, next) => {
-    const userSkillRelation = {
-      model: this.userSkillModel,
-      as: 'userSkills',
-      attributes: ['skill_name'],
-    };
-
-    const userProjectExperience = {
-      model: this.userProjectExperienceModel,
-      as: 'userProjectExperiences',
-      attributes: ['title', 'thumbnailUrl', 'description'],
-    };
-
-    const userExperienceModel = {
-      model: this.userExperienceModel,
-      as: 'userExperiences',
-      attributes: ['companyName', 'location', 'title', 'startDate', 'endDate', 'description'],
-    };
+    const userRelations = [
+      {
+        model: this.userSkillModel,
+        as: 'userSkills',
+        attributes: ['skillName'],
+      },
+      {
+        model: this.userProjectExperienceModel,
+        as: 'userProjectExperiences',
+        attributes: ['title', 'thumbnailUrl', 'description'],
+      },
+      {
+        model: this.userExperienceModel,
+        as: 'userExperiences',
+        attributes: [
+          'companyName',
+          'location',
+          'title',
+          'startDate',
+          'endDate',
+          'description',
+        ],
+      },
+      {
+        model: this.dailyMentoringModel,
+        as: 'dailyMentoring',
+        attributes: ['price', 'durationMonth'],
+      },
+    ];
 
     try {
       let userInfo;
       userInfo = await this.userModel.findOne({
         logging: this.log.logSqlQuery(req.context),
-        include: [userProjectExperience, userSkillRelation, userExperienceModel],
+        include: userRelations,
         where: { uid: req.params.userId },
       });
 
@@ -140,7 +154,14 @@ module.exports = class UserController {
         throw new ErrorLib(`user with id ${req.param.userId} not found`, 404);
       }
 
-      this.helper.httpRespSuccess(req, res, 200, userInfo, null);
+      const response = {
+        ...userInfo.dataValues,
+        userSkills: [
+          ...new Set(userInfo.userSkills.map((skill) => skill.skillName)),
+        ].map((skillName) => ({ skillName })),
+      };
+
+      this.helper.httpRespSuccess(req, res, 200, response, null);
     } catch (error) {
       next(error);
     }

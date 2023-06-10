@@ -19,6 +19,7 @@ module.exports = class Controller {
       model.UserSkill,
       model.UserFeedback,
       model.DailyMentoringApplicant,
+      model.DailyMentoring,
       model.sequelize.transaction.bind(model.sequelize),
     );
     this.project = new ProjectController(

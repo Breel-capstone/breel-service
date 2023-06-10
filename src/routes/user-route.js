@@ -168,6 +168,29 @@ module.exports = class UserRoute {
        *           application/json:
        *             schema:
        *               type: object
+       *               properties:
+       *                 userSkills:
+       *                   type: array
+       *                   items:
+       *                     allOf:
+       *                       - $ref: '#/components/schemas/UserSkill'
+       *                 userExperiences:
+       *                   type: array
+       *                   items:
+       *                     allOf:
+       *                       - $ref: '#/components/schemas/UserExperience'
+       *                 userProjectExperiences:
+       *                   type: array
+       *                   items:
+       *                     allOf:
+       *                       - $ref: '#/components/schemas/UserProjectExperience'
+       *                 dailyMentoring:
+       *                   type: object
+       *                   properties:
+       *                     price:
+       *                       type: integer
+       *                     durationMonth:
+       *                       type: integer
        *               allOf:
        *                 - $ref: '#/components/schemas/User'
        *                 - $ref: '#/components/schemas/UtilityField'

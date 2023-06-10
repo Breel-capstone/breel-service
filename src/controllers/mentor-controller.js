@@ -79,7 +79,7 @@ module.exports = class MentorController {
     const mentorSkillRelation = {
       model: this.userSkillModel,
       as: 'userSkills',
-      attributes: ['skill_name'],
+      attributes: ['skillName'],
     };
 
     try {
@@ -99,7 +99,7 @@ module.exports = class MentorController {
       const mentorListData = mentorList.map((mentor) => ({
         ...mentor.dataValues,
         price: mentor.dailyMentoring.price,
-        skills: mentor.userSkills.map((skill) => skill.skillName),
+        skills: this.mapUserSkills(mentor.userSkills),
         dailyMentoring: undefined,
         userSkills: undefined,
       }));
@@ -158,7 +158,7 @@ module.exports = class MentorController {
               {
                 model: this.userSkillModel,
                 as: 'userSkills',
-                attributes: ['skill_name'],
+                attributes: ['skillName'],
               },
             ],
           },
@@ -173,16 +173,12 @@ module.exports = class MentorController {
         if (dmApplicant.status === 'Approved') {
           acceptedApplicants.push({
             ...dmApplicant.applicant.dataValues,
-            skills: dmApplicant.applicant.userSkills.map(
-              (skill) => skill.skillName,
-            ),
+            skills: this.mapUserSkills(dmApplicant.applicant.userSkills)
           });
         } else if (dmApplicant.status === 'Pending') {
           pendingApplicants.push({
             ...dmApplicant.applicant.dataValues,
-            skills: dmApplicant.applicant.userSkills.map(
-              (skill) => skill.skillName,
-            ),
+            skills: this.mapUserSkills(dmApplicant.applicant.userSkills)
           });
         }
       });
@@ -335,5 +331,10 @@ module.exports = class MentorController {
     } catch (error) {
       next(error);
     }
+  };
+
+  mapUserSkills = (userSkills) => {
+    const newUserSkills = [...new Set(userSkills.map((skill) => skill.skillName))];
+    return newUserSkills;
   };
 };
