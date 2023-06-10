@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
         onDelete: 'CASCADE',
       },
       date: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       feedback: {

@@ -791,7 +791,7 @@
                 "date": {
                     "allowNull": false,
                     "field": "date",
-                    "seqType": "Sequelize.DATE"
+                    "seqType": "Sequelize.DATEONLY"
                 },
                 "feedback": {
                     "allowNull": false,
@@ -966,5 +966,5 @@
             "indexes": []
         }
     },
-    "revision": 22
+    "revision": 23
 }
