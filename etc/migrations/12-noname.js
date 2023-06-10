@@ -194,7 +194,7 @@ var migrationCommands = function(transaction) {
       'project',
       'status',
       {
-        type: Sequelize.ENUM('Mencari', 'Sedang Berjalan', 'Selesai'),
+        type: Sequelize.ENUM('Mencari', 'Menunggu Konfirmasi Freelancer', 'Sedang Berjalan', 'Selesai'),
         field: 'status',
         defaultValue: 'Mencari'
       },
