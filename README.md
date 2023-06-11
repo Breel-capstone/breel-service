@@ -4,6 +4,7 @@
 
 ## Pre-Requisite
 - Node v19.0.1
+- PostgreSQL v15
 
 
 
