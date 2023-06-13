@@ -665,7 +665,7 @@ module.exports = class ProjectController {
       });
 
       if (!user || user.roleId !== 2) {
-        throw new ErrorLib("You don't have permission to access this API");
+        throw new ErrorLib('You don\'t have permission to access this API');
       }
 
       const project = await this.projectModel.findAll({
