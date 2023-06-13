@@ -67,8 +67,8 @@ module.exports = class ProjectController {
         logging: this.log.logSqlQuery(req.context),
       });
 
-      if (!user || user.roleId !== 3) {
-        throw new ErrorLib('Only client can create project', 403);
+      if (!user || user.roleId < 2) {
+        throw new ErrorLib('Only client and mentor can create project', 403);
       }
 
       await this.projectModel.create(
@@ -80,6 +80,7 @@ module.exports = class ProjectController {
           budget,
           budgetString: budget.toLocaleString('id-ID'),
           skills: skills.join(','),
+          mentorId: user.roleId === 2 ? user.id : null,
         },
         {
           logging: this.log.logSqlQuery(req.context),
@@ -447,7 +448,7 @@ module.exports = class ProjectController {
         attributes: ['id', 'roleId'],
         logging: this.log.logSqlQuery(req.context),
       });
-      if (user.roleId !== 2) {
+      if (user.roleId < 2) {
         this.helper.httpRespError(
           req,
           res,
@@ -559,11 +560,11 @@ module.exports = class ProjectController {
   };
 
   getProjectById = async (req, res, next) => {
-    const { id } = req.query;
+    const { id } = req.params;
 
     try {
       const projectDetail = await this.projectModel.findOne({
-        where: id,
+        where: { id },
         logging: this.log.logSqlQuery(req.context),
       });
 
