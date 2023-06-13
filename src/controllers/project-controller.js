@@ -133,26 +133,6 @@ module.exports = class ProjectController {
       (klo kurang setuju report yak)
       */
 
-      if (user) {
-        switch (user.roleId) {
-          case 2:
-            projectCondition.mentorId = user.id;
-            break;
-          case 3:
-            projectCondition.clientId = user.id;
-            break;
-          default:
-            throw new ErrorLib(
-              'You do not have permission to update this proposal/project',
-              403,
-            );
-        }
-      } else {
-        throw new ErrorLib(
-          'You do not have permission to update this proposal/project',
-          403,
-        );
-      }
 
       // get project yang direquest
       const project = await this.projectModel.findOne({
@@ -165,6 +145,29 @@ module.exports = class ProjectController {
           'You do not have permission to update this proposal/project',
           403,
         );
+      }
+
+      if (project.status !== 'Menunggu Konfirmasi Freelancer') {
+        if (user) {
+          switch (user.roleId) {
+            case 2:
+              projectCondition.mentorId = user.id;
+              break;
+            case 3:
+              projectCondition.clientId = user.id;
+              break;
+            default:
+              throw new ErrorLib(
+                'You do not have permission to update this proposal/project',
+                403,
+              );
+          }
+        } else {
+          throw new ErrorLib(
+            'You do not have permission to update this proposal/project',
+            403,
+          );
+        }
       }
 
       // dbTransaction usage
@@ -301,7 +304,7 @@ module.exports = class ProjectController {
       } else {
         // ketika project dalam status "Menunggu Konfirmasi Freelancer"
         // pastiin yang request sekarang adalah mentor, bukan client
-        if (user.roleId == 2) {
+        if (user.roleId < 2) {
           // di acc sama mentor/freelancer
           if (status === 'Accepted') {
             // jika di acc sama mentor/freelancer, update status menjadi "Sedang Berjalan"
@@ -666,7 +669,7 @@ module.exports = class ProjectController {
       });
 
       if (!user || user.roleId !== 2) {
-        throw new ErrorLib('You don\'t have permission to access this API');
+        throw new ErrorLib("You don't have permission to access this API");
       }
 
       const project = await this.projectModel.findAll({
