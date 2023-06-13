@@ -43,9 +43,3 @@ After that, now you're ready to run the service by run the following command
 npm install && npm run start
 ```
 This will install all the dependencies required and run the service
-
-## Installation
-- Ask me for the .env file
-- Install all tthe dependencies with `npm install`
-- Run the server with `npm run start`
-
