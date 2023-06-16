@@ -1,4 +1,4 @@
-# breel-capstone
+# breel-service
 
 [API Docs](https://breel-service-67fn7hvfma-as.a.run.app/swagger/)
 
