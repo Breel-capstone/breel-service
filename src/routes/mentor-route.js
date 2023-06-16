@@ -21,6 +21,8 @@ module.exports = class MentorRoute {
    *          type: string
    *        price:
    *          type: integer
+   *        priceString:
+   *          type: string
    *        durationMonth:
    *          type: integer
    */

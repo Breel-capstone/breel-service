@@ -99,6 +99,7 @@ module.exports = class MentorController {
       const mentorListData = mentorList.map((mentor) => ({
         ...mentor.dataValues,
         price: mentor.dailyMentoring.price,
+        priceString: mentor.dailyMentoring.price.toLocaleString('id-ID'),
         skills: this.mapUserSkills(mentor.userSkills),
         dailyMentoring: undefined,
         userSkills: undefined,
